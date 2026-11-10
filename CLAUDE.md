@@ -16,7 +16,7 @@
 | L1 シム設定 | `simulator_scripts/*.sh`、`Makefile` | shellcheck + 1回起動 | 1 | 無し | 評価条件が変わる差分のみ読む |
 | L2 パラメータ | `config/config.yaml` の `Q`、`QN`、`ay_max`、`v_max`、`ref_vel*.yaml` | 値域検査 + invariant_check | 変更後3（ベースライン分布と比較） | 無し | 結果表を見て採否＋**物理的な意味を1行書く**。`config.yaml` の diff は短いので毎回全行見る |
 | L3 経路計画 | `env/*/traj_*.csv`、`reference_path.py` | 経路の静的検査 + invariant_check | 3 | 別セッション1本 | 結果表＋経路の図 |
-| **LM 計測器** | `research_tools/bench.sh`、`lap_monitor.py`、`summarize.py`、`invariant_check.py`、`check_claims.py`、`run_queue.sh`、`test_mpc_core.py`、`experiments/*/plan.md` の雛形 | 既存3結果（`bench_baseline/fixed_bc_only/fixed_all.txt`）を固定入力にした `test_research_tools.py`（集計値が1桁も変わらない） | 0 | 無し | **全文 diff を読み `approvals.md` に1行**。閾値・集計方法の変更は決定記録「規則変更」必須 |
+| **LM 計測器** | `research_tools/bench.sh`、`lap_monitor.py`、`summarize.py`、`invariant_check.py`、`check_claims.py`、`run_queue.sh`、`test_mpc_core.py`、`experiments/*/plan.md` の雛形 | 既存結果（`results/20261109-15*_{baseline,fixed_all,fixed_bc_only}_*/` など）を固定入力にした `test_research_tools.py`（集計値が1桁も変わらない） | 0 | 無し | **全文 diff を読み `approvals.md` に1行**。閾値・集計方法の変更は決定記録「規則変更」必須 |
 | L4 制御則・安全ガード | `core/MPC.py`、`mpc_controller.py`、`spatial_bicycle_models.py`、`config.yaml` の安全値 | 単体テスト + invariant_check | A/B 交互に各3（計6） | 反証専用1本（別モデル推奨） | **全文 diff を読む**。`approvals.md` に1行 |
 | L5 実車固有・提出物・規則 | `vehicle/.calibration/*/imu_bias.yaml`、`accel_map/brake_map.csv`、`reference.launch.xml` の実車分岐、提出 tar、`CLAUDE.md`、採用基準 | 実車前チェックリスト | シムでは検証できない部分あり | 反証専用1本 | **全文 diff＋翌日の自分で再読**。規則の変更は決定記録に残す |
 

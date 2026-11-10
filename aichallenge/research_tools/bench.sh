@@ -3,6 +3,13 @@
 #
 # Usage: aichallenge/research_tools/bench.sh <label> [duration_sec]
 #   環境変数: BENCH_ROSBAG=0 で rosbag を録らない。BENCH_MAKE=<cmd> は make の差し替え（起動失敗の模擬用。meta に残る）。
+#     BENCH_ROOT=<dir>        走らせるリポジトリ（既定: このスクリプトのあるリポジトリ。run_queue.sh が worktree を渡す）
+#     BENCH_RESULTS_DIR=<dir> 結果の置き場（既定: <BENCH_ROOT>/aichallenge/research_tools/results）。
+#                             ロックはその親ディレクトリの .bench.lock（= 置き場が同じなら worktree からでも同じロック）
+#     BENCH_EXPLORE=1         探索用の走行（meta に explore: true。docs には引用しない）
+#     BENCH_JOB / BENCH_RUN_INDEX  run_queue.sh が付けるジョブ ID と何回目か（meta に残る）
+#     BENCH_DRIVER=<文字列>   誰が起動したか（既定 manual。run_queue.sh は run_queue:<pid>）
+#     BENCH_BUILD_COMMIT      worktree にコピーした build/ の出自（run_queue.sh が渡す。meta に残るだけ）
 #
 # 出力: aichallenge/research_tools/results/<YYYYMMDD-HHMMSS>_<label>_<commit>[+dirty]/
 #   meta.json            開始時に書き、終了時に status を追記（completed | aborted | void）
@@ -19,7 +26,9 @@
 #   git_diff.patch       作業ツリーが dirty のときだけ
 # rosbag は output/<run>/d1/rosbag2_all/ に残す（git には入れない。meta.json にパスと metadata.yaml の sha256）。
 #
-# 終了コード: 0 completed / 1 aborted / 4 void / 2 引数エラー / 3 ロックあり
+# 終了コード: 0 completed / 1 aborted / 4 void / 2 引数エラー / 3 ロックあり（取れなかった） / 5 他のコンテナが動いている
+# 開始時に compose project "aichallenge" のコンテナが1つでもあれば起動しない（他セッションの走行やビルドを壊さないため。
+#   前回の異常終了の残骸なら、人間が `make down` してから再実行する）。
 # aborted: make dev 失敗、output/<run>/ ができない、AWSIM/Autoware が起動しない・走行中に落ちた、
 #   lap_monitor が END まで行かない、結果 JSON が新しく書かれない、など。
 #   起動前の abort では meta.json/config.yaml/git_* しか無い。走行後の abort（JSON が書かれない等）では
@@ -31,18 +40,24 @@ label="${1:?usage: bench.sh <label> [duration_sec]}"
 dur="${2:-290}"
 case "$label" in ''|*[!A-Za-z0-9_.-]*) echo "bench: label は英数字・_・-・. のみ: '$label'" >&2; exit 2;; esac
 case "$dur" in ''|*[!0-9]*) echo "bench: duration_sec は整数: '$dur'" >&2; exit 2;; esac
+case "${BENCH_RUN_INDEX:-0}" in *[!0-9]*) echo "bench: BENCH_RUN_INDEX は整数" >&2; exit 2;; esac
 
 MAKE="${BENCH_MAKE:-make}"
 ROSBAG="${BENCH_ROSBAG:-1}"
 
-cd "$(dirname "$0")/../.." || exit 1 # repo root
+self="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+tools="$(dirname "$self")"             # 計測器（このスクリプトと python 補助）の場所。root とは別でよい
+root="${BENCH_ROOT:-$(cd "$tools/../.." && pwd)}"
+cd "$root" || exit 1
 root="$(pwd)"
-tools="$root/aichallenge/research_tools"
+results_root="${BENCH_RESULTS_DIR:-$tools/results}"
+mkdir -p "$results_root" || exit 1
+results_root="$(cd "$results_root" && pwd)"
 submit="$root/aichallenge/workspace/src/aichallenge_submit/multi_purpose_mpc_ros"
 watch_files=("$submit/multi_purpose_mpc_ros/core/MPC.py" "$submit/multi_purpose_mpc_ros/mpc_controller.py" "$submit/config/config.yaml")
 result_json="$root/aichallenge/d1-result-details.json"
 summary_json="$root/aichallenge/result-summary.json"
-lock="$tools/.bench.lock"
+lock="$(dirname "$results_root")/.bench.lock"
 
 commit="$(git -C "$root" rev-parse --short HEAD)"
 git_status="$(git -C "$root" status --porcelain --untracked-files=all)"
@@ -51,7 +66,7 @@ dirty=""
 if ! git -C "$root" diff --quiet HEAD -- . || grep -q '^?? aichallenge/workspace/src/' <<<"$git_status"; then dirty="+dirty"; fi
 stamp="$(date +%Y%m%d-%H%M%S)"
 run="$stamp"                       # output/<run>（make に LOG_DIR として渡す）
-res="$tools/results/${stamp}_${label}_${commit}${dirty}"
+res="$results_root/${stamp}_${label}_${commit}${dirty}"
 logdir="$root/output/$run"
 
 sha_of() { sha256sum "$1" | cut -d' ' -f1; }
@@ -112,21 +127,30 @@ finish() {
 }
 abort() {
     reason="$1"; echo "bench: ABORT: $reason" >&2
-    if [ "$in_finish" = 1 ]; then echo "bench: (abort during finish)" >&2; rm -f "$lock"; exit 1; fi
+    if [ "$in_finish" = 1 ]; then echo "bench: (abort during finish)" >&2; rm -f "$lock"; echo "RESULT_DIR=$res status=aborted reason=$reason"; exit 1; fi
     exit 1
 }
 
-if [ -e "$lock" ]; then
+# ロックは noclobber で原子的に取る（存在確認→作成の隙を無くす）。pid が死んでいる古いロックは1回だけ消して取り直す
+take_lock() { ( set -o noclobber; echo "$$ $res $(now)" > "$lock" ) 2>/dev/null; }
+if ! take_lock; then
     lock_pid="$(cut -d' ' -f1 "$lock" 2>/dev/null)"
     if [ -n "$lock_pid" ] && kill -0 "$lock_pid" 2>/dev/null; then
-        echo "bench: $lock があります（bench が走行中。中身: $(cat "$lock")）" >&2; exit 3
+        echo "bench: $lock があります（bench が走行中。中身: $(cat "$lock" 2>/dev/null)）" >&2; exit 3
     fi
-    echo "bench: 古いロック（pid $lock_pid は居ない）を消します: $(cat "$lock")" >&2
+    echo "bench: 古いロック（pid ${lock_pid:-?} は居ない）を消します: $(cat "$lock" 2>/dev/null)" >&2
     rm -f "$lock"
+    take_lock || { echo "bench: ロックを取れません: $lock" >&2; exit 3; }
+fi
+# 他のコンテナが動いていたら起動しない（ロックは取った後なので finish が消す）
+others="$(docker compose ps -a --format '{{.Name}} {{.Status}}' 2>/dev/null)"
+if [ -n "$others" ]; then
+    echo "bench: compose project のコンテナが既にあります。他セッションの走行・ビルド、または前回の残骸です。\`make down\` してから再実行してください:" >&2
+    echo "$others" >&2
+    rm -f "$lock"; exit 5
 fi
 
-mkdir -p "$res" || exit 1
-echo "$$ $res $(now)" > "$lock"
+mkdir -p "$res" || { rm -f "$lock"; exit 1; }
 trap finish EXIT
 trap 'reason="interrupted (SIGINT/SIGTERM)"; exit 130' INT TERM
 
@@ -145,6 +169,17 @@ cat > "$res/meta.json" <<EOF2
   "branch": $(jstr "$(git -C "$root" branch --show-current)"),
   "duration_sec": $dur,
   "sim_mode": "dev",
+  "root": $(jstr "$root"),
+  "explore": $([ "${BENCH_EXPLORE:-0}" = "1" ] && echo true || echo false),
+  "job": $(jstr "${BENCH_JOB:-}"),
+  "run_index": ${BENCH_RUN_INDEX:-0},
+  "driver": $(jstr "${BENCH_DRIVER:-manual}"),
+  "tools_root": $(jstr "$tools"),
+  "tools_commit": $(jstr "$(git -C "$tools" rev-parse --short HEAD 2>/dev/null || echo unknown)"),
+  "tools_dirty": $([ -n "$(git -C "$tools" status --porcelain -- . 2>/dev/null)" ] && echo true || echo false),
+  "sha256_tools": {$(for f in bench.sh lap_monitor.py bench_common.py compare_params.py invariant_check.py; do printf '%s: %s, ' "$(jstr "$f")" "$(jstr "$(sha_of "$tools/$f")")"; done | sed 's/, $//')},
+  "build_commit": $(jstr "${BENCH_BUILD_COMMIT:-}"),
+  "awsim_dir": {"bytes": $(du -sb "$root/aichallenge/simulator/AWSIM" 2>/dev/null | cut -f1 || echo 0), "mtime_x86_64": $(stat -c %Y "$root/aichallenge/simulator/AWSIM/AWSIM.x86_64" 2>/dev/null || echo 0)},
   "make_cmd": $(jstr "$MAKE"),
   "rosbag": $([ "$ROSBAG" = "1" ] && echo true || echo false),
   "compose_file": $(jstr "$compose_file"),
@@ -188,6 +223,8 @@ if grep -q "\[ERROR\]" "$logdir/awsim.log"; then
 fi
 compose_running simulator || abort "simulator container is not running"
 compose_running autoware || abort "autoware container is not running"
+cid_start="$(docker compose ps -q simulator autoware 2>/dev/null | sort | tr '\n' ' ')"
+meta_set container_ids "$(jstr "$cid_start")"
 
 # (3) rosbag（dev と同じ LOG_DIR → output/<run>/d1/rosbag2_all）
 if [ "$ROSBAG" = "1" ]; then
@@ -213,7 +250,7 @@ esac
 meta_set monitor_start_time "$(jstr "$(now)")"
 {
     echo "label=$label logdir=output/$run commit=${commit}${dirty}"
-    CMD="python3 /aichallenge/research_tools/lap_monitor.py $dur" timeout $((dur + 60)) docker compose run --rm --no-deps autoware-command 2>/dev/null | grep -E "LAP|END"
+    CMD="python3 /tmp/lap_monitor.py $dur" timeout $((dur + 60)) docker compose run --rm --no-deps -v "$tools/lap_monitor.py:/tmp/lap_monitor.py:ro" autoware-command 2>/dev/null | grep -E "LAP|END"
     echo "--- mpc_stats ---"
     grep -a "mpc_stats" "$logdir/d1/autoware.log" | sed -E 's/.*\[mpc_stats\]/[mpc_stats]/' | tail -n 40
 } | tee "$res/bench.txt"
@@ -222,6 +259,8 @@ grep -q '^END:' "$res/bench.txt" || abort "lap_monitor did not reach END (see be
 # 走行後にも生存確認（走行中に落ちた走行を completed にしない）
 compose_running simulator || abort "simulator container died during run"
 compose_running autoware || abort "autoware container died during run"
+cid_end="$(docker compose ps -q simulator autoware 2>/dev/null | sort | tr '\n' ' ')"
+[ "$cid_end" = "$cid_start" ] || abort "simulator/autoware containers were recreated during run (another make dev?)"
 
 # (4) 終了直前のパラメータ（走行中に変えられていないか）
 if param_dump "$res/params_runtime_end.yaml"; then

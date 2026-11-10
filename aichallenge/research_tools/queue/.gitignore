@@ -1,0 +1,7 @@
+*.job
+running/
+run_queue.log
+STOP
+!done/*.job
+!failed/*.job
+.run_queue.lock

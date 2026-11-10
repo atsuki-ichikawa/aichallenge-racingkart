@@ -1,0 +1,60 @@
+{
+  "bench_version": 2,
+  "label": "queue_smoke",
+  "commit": "4b01c42",
+  "dirty": false,
+  "branch": "",
+  "duration_sec": 290,
+  "sim_mode": "dev",
+  "root": "/home/k22010/nlp/research/auto_drive/aichallenge-queue",
+  "explore": false,
+  "job": "T-0001-queue-smoke",
+  "run_index": 1,
+  "sha256_bench_sh": "bfa0193c2bfe7670b1f8de6aa4f25aea0c5f3d24be12ed9f0362924b78b68840",
+  "make_cmd": "make",
+  "rosbag": true,
+  "compose_file": "docker-compose.yml:docker-compose.gpu.yml:docker-compose.sound.yml",
+  "image_id": "sha256:6af9c0c8deba9637c2da7bdc12043b07b9ed03879a3274905b5441bbd61af7f5",
+  "sha256_dev_sh": "570da148894711f89bedb79dab2e0a6c7be0acdc67b7a796b2c4cb2554ecb2ad",
+  "host": "nlplab-System-Product-Name",
+  "start_time": "2026-11-10T18:33:55+09:00",
+  "load_avg_start": "2.16 1.51 1.29",
+  "output_dir": "output/20261110-183355",
+  "sha256_start": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "status": "completed",
+  "result_json_before": {
+    "mtime": 0,
+    "sha256": "none"
+  },
+  "sim_start_time": "2026-11-10T18:33:56+09:00",
+  "param_override": false,
+  "monitor_start_time": "2026-11-10T18:34:05+09:00",
+  "monitor_end_time": "2026-11-10T18:38:56+09:00",
+  "params_changed_during_run": false,
+  "rosbag_dir": "output/20261110-183355/d1/rosbag2_all",
+  "rosbag_bytes": 22194652,
+  "rosbag_files": 5,
+  "sha256_rosbag_metadata": "b270a516f564841cccc409c1c00e7da00708ad5107df189940c00d65741b95d0",
+  "sim_end_time": "2026-11-10T18:39:07+09:00",
+  "result_json_after": {
+    "mtime": 1794303540,
+    "sha256": "771db2a189eefdeed2eb38783493ce10b83f855dd49b13acd64302e41a6aac4e"
+  },
+  "lap_n": 3,
+  "sha256_autoware_log": "51ac7d95c494969ea2252c33ded406bf5a014e94c9185fe612f6b92d1c8f95d9",
+  "autoware_log_lines": 352,
+  "mpc_stats_lines": 29,
+  "invariant_rc": 0,
+  "sha256_end": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "reason": "",
+  "end_time": "2026-11-10T18:39:08+09:00",
+  "load_avg_end": "3.94 3.68 2.39"
+}

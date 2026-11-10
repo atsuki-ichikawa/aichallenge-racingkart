@@ -1,0 +1,35 @@
+label=queue_smoke logdir=output/20261110-183355 commit=4b01c42
+LAP 0 done: 0.00 s
+LAP 1 done: 72.60 s
+LAP 2 done: 68.36 s
+LAP 3 done: 68.70 s
+END: lap=4 section=8 current_lap_time=58.94 s
+--- mpc_stats ---
+[mpc_stats] calls=400 solves=503 status={'maximum iterations reached': 145, 'primal infeasible inaccurate': 18, 'solved inaccurate': 29, 'primal infeasible': 5, 'solved': 306} iter_mean=1584 iter_max=4000 t_mean=4.57ms t_p99=9.04ms max_raw_delta=33.1deg fallbacks=1 rejected=103 setups=1
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=26 iter_max=75 t_mean=2.30ms t_p99=3.14ms max_raw_delta=3.7deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=101 iter_max=1825 t_mean=2.41ms t_p99=4.30ms max_raw_delta=17.7deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=135 iter_max=3475 t_mean=2.52ms t_p99=6.30ms max_raw_delta=18.5deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 391, 'solved inaccurate': 9} iter_mean=346 iter_max=4000 t_mean=2.79ms t_p99=10.13ms max_raw_delta=18.5deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 398, 'solved inaccurate': 2} iter_mean=225 iter_max=4000 t_mean=2.56ms t_p99=6.39ms max_raw_delta=17.4deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 385, 'solved inaccurate': 15} iter_mean=647 iter_max=4000 t_mean=3.44ms t_p99=10.60ms max_raw_delta=19.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 399, 'solved inaccurate': 1} iter_mean=210 iter_max=4000 t_mean=2.65ms t_p99=7.02ms max_raw_delta=14.4deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=131 iter_max=2825 t_mean=2.43ms t_p99=5.34ms max_raw_delta=13.7deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=88 iter_max=1200 t_mean=2.34ms t_p99=4.12ms max_raw_delta=18.2deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=123 iter_max=2250 t_mean=2.51ms t_p99=5.60ms max_raw_delta=18.8deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 393, 'solved inaccurate': 7} iter_mean=411 iter_max=4000 t_mean=3.13ms t_p99=10.13ms max_raw_delta=18.7deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 397, 'solved inaccurate': 3} iter_mean=232 iter_max=4000 t_mean=2.81ms t_p99=7.42ms max_raw_delta=16.8deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 384, 'solved inaccurate': 16} iter_mean=574 iter_max=4000 t_mean=3.28ms t_p99=10.58ms max_raw_delta=18.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=123 iter_max=2100 t_mean=2.35ms t_p99=4.20ms max_raw_delta=14.5deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=172 iter_max=3900 t_mean=2.59ms t_p99=6.83ms max_raw_delta=14.0deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=110 iter_max=2225 t_mean=2.46ms t_p99=5.13ms max_raw_delta=17.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=147 iter_max=2450 t_mean=2.50ms t_p99=5.96ms max_raw_delta=18.6deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 394, 'solved inaccurate': 6} iter_mean=390 iter_max=4000 t_mean=3.04ms t_p99=10.21ms max_raw_delta=18.2deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 397, 'solved inaccurate': 3} iter_mean=250 iter_max=4000 t_mean=2.69ms t_p99=7.29ms max_raw_delta=17.5deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 383, 'solved inaccurate': 17} iter_mean=603 iter_max=4000 t_mean=3.38ms t_p99=10.67ms max_raw_delta=18.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=206 iter_max=3575 t_mean=2.67ms t_p99=6.19ms max_raw_delta=15.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=123 iter_max=2850 t_mean=2.44ms t_p99=5.46ms max_raw_delta=14.0deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=90 iter_max=1525 t_mean=2.46ms t_p99=4.03ms max_raw_delta=18.3deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=132 iter_max=2325 t_mean=2.46ms t_p99=5.63ms max_raw_delta=18.4deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved inaccurate': 7, 'solved': 393} iter_mean=381 iter_max=4000 t_mean=2.95ms t_p99=10.35ms max_raw_delta=18.9deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved': 397, 'solved inaccurate': 3} iter_mean=267 iter_max=4000 t_mean=2.73ms t_p99=9.00ms max_raw_delta=18.7deg fallbacks=0 rejected=0 setups=0
+[mpc_stats] calls=400 solves=400 status={'solved inaccurate': 24, 'solved': 376} iter_mean=629 iter_max=4000 t_mean=3.58ms t_p99=10.92ms max_raw_delta=17.6deg fallbacks=0 rejected=0 setups=0

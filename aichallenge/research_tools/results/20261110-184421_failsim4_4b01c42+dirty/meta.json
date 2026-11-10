@@ -1,0 +1,56 @@
+{
+  "bench_version": 2,
+  "label": "failsim4",
+  "commit": "4b01c42",
+  "dirty": true,
+  "branch": "tools/run-queue",
+  "duration_sec": 30,
+  "sim_mode": "dev",
+  "root": "/home/k22010/nlp/research/auto_drive/aichallenge-racingkart",
+  "explore": false,
+  "job": "",
+  "run_index": 0,
+  "driver": "manual",
+  "tools_root": "/home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools",
+  "tools_commit": "4b01c42",
+  "tools_dirty": true,
+  "sha256_tools": {
+    "bench.sh": "66e0c2375499b98f64194eaccc4bb66d17d87352c038325813cbd6931eba2f90",
+    "lap_monitor.py": "21b05fb78ad42ad663a568e47009c32ab585703cf01be0b2d963c163ae56c8bf",
+    "bench_common.py": "2d8c5e98dbbd1cfddbe15f6dc65d6fdd3ee316026bb5c4da2486ab8e3914dcb3",
+    "compare_params.py": "2e929dc5fcd487295c3253502e6649480589cbb832ab871e6f495c845e4103c5",
+    "invariant_check.py": "12ef29970e74d3dd5c8ce54d4343559628f10b893e78627eea2f43e86c06decf"
+  },
+  "build_commit": "",
+  "awsim_bin": {
+    "size": 14720,
+    "mtime": 1794206041
+  },
+  "make_cmd": "false",
+  "rosbag": false,
+  "compose_file": "docker-compose.yml:docker-compose.gpu.yml:docker-compose.sound.yml",
+  "image_id": "sha256:6af9c0c8deba9637c2da7bdc12043b07b9ed03879a3274905b5441bbd61af7f5",
+  "sha256_dev_sh": "570da148894711f89bedb79dab2e0a6c7be0acdc67b7a796b2c4cb2554ecb2ad",
+  "host": "nlplab-System-Product-Name",
+  "start_time": "2026-11-10T18:44:22+09:00",
+  "load_avg_start": "2.34 2.63 2.30",
+  "output_dir": "output/20261110-184421",
+  "sha256_start": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "status": "aborted",
+  "result_json_before": {
+    "mtime": 1794301525,
+    "sha256": "bde1d3ec8bc88e4bad7aecf2473bfe36073303208ff5d389a07ef00791e262f0"
+  },
+  "sha256_end": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "reason": "make dev failed (see make_dev.log)",
+  "end_time": "2026-11-10T18:44:23+09:00",
+  "load_avg_end": "2.34 2.63 2.30"
+}

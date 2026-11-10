@@ -1,0 +1,42 @@
+{
+  "bench_version": 2,
+  "label": "queue_smoke",
+  "commit": "4b01c42",
+  "dirty": false,
+  "branch": "",
+  "duration_sec": 290,
+  "sim_mode": "dev",
+  "root": "/home/k22010/nlp/research/auto_drive/aichallenge-queue",
+  "explore": false,
+  "job": "T-0000-queue-smoke",
+  "run_index": 1,
+  "sha256_bench_sh": "bfa0193c2bfe7670b1f8de6aa4f25aea0c5f3d24be12ed9f0362924b78b68840",
+  "make_cmd": "make",
+  "rosbag": true,
+  "compose_file": "docker-compose.yml:docker-compose.gpu.yml:docker-compose.sound.yml",
+  "image_id": "sha256:6af9c0c8deba9637c2da7bdc12043b07b9ed03879a3274905b5441bbd61af7f5",
+  "sha256_dev_sh": "570da148894711f89bedb79dab2e0a6c7be0acdc67b7a796b2c4cb2554ecb2ad",
+  "host": "nlplab-System-Product-Name",
+  "start_time": "2026-11-10T18:33:01+09:00",
+  "load_avg_start": "2.07 1.36 1.23",
+  "output_dir": "output/20261110-183301",
+  "sha256_start": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "status": "aborted",
+  "result_json_before": {
+    "mtime": 0,
+    "sha256": "none"
+  },
+  "sim_start_time": "2026-11-10T18:33:02+09:00",
+  "sha256_end": {
+    "MPC.py": "9396c0afb079a8335339e5e2136a2dbad76eb5bcffeb9b36073032fe2d29fa70",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "98eed17581dafdc7cdae90fb8cef99a8afc60abc0e54ff8ffa3c2668c99a170f"
+  },
+  "reason": "simulator container is not running",
+  "end_time": "2026-11-10T18:33:15+09:00",
+  "load_avg_end": "2.21 1.42 1.26"
+}

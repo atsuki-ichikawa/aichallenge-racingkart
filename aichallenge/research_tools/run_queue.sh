@@ -2,9 +2,11 @@
 # run_queue.sh [--once] [--poll SEC] — queue/ のジョブを直列に消化する（方針 §6）。
 #
 # ジョブ: aichallenge/research_tools/queue/<ID>.job（1行、# で始まる行は無視）
-#   <commit> <label> [<n>] [<duration_sec>] [--explore]
+#   <commit> <label> [<n>] [<duration_sec>] [--explore] [plan=<plan.md>]
 #   例: 4b01c42 T-0001_ay75 3            → commit 4b01c42 を label T-0001_ay75 で 3 回（既定 1 回、290 秒）
 #       4b01c42 probe 1 120 --explore     → 120 秒の探索用走行（meta に explore: true）
+#       c388dbf baseline_var 5 plan=aichallenge/research_tools/experiments/0001-baseline-variance/plan.md
+#                                         → 事前登録の plan.md を bench.sh に渡す（このリポジトリからの相対パス。未コミットなら bench が拒否）
 #   n は 1〜10、duration は 30〜900 秒。commit はブランチ名やタグでもよい（解決した完全な hash をジョブに追記する）。
 # 流れ: 最も古い .job を running/ へ → wait_bench.sh → 専用 worktree（../aichallenge-queue）でその commit を checkout
 #   → **このリポジトリの bench.sh**（計測器は常に main 側の版）を BENCH_ROOT=worktree で n 回
@@ -93,7 +95,7 @@ prepare_worktree() { # prepare_worktree <commit> → 0 ok / 1 fail（理由は s
 }
 
 run_job() { # run_job <jobfile in running/> → 0 done / 1 failed（理由は stderr の最終行）
-    local job="$1" id line commit label n dur explore=0 tok
+    local job="$1" id line commit label n dur explore=0 plan="" tok
     id="$(basename "$job" .job)"
     [ -z "$(tail -c1 "$job")" ] || echo >> "$job"   # 末尾改行が無い行に追記して壊さない
     line="$(grep -v '^#' "$job" | grep -m1 .)"
@@ -102,6 +104,7 @@ run_job() { # run_job <jobfile in running/> → 0 done / 1 failed（理由は st
     for tok in $line; do
         case "$tok" in
             --explore) explore=1 ;;
+            plan=*) plan="${tok#plan=}"; [ -f "$main_root/$plan" ] || { set +f; echo "plan.md が無い: $plan" >&2; return 1; } ;;
             *) if [ -z "$commit" ]; then commit="$tok"
                elif [ -z "$label" ]; then label="$tok"
                elif [ -z "$n" ]; then n="$tok"
@@ -118,8 +121,8 @@ run_job() { # run_job <jobfile in running/> → 0 done / 1 failed（理由は st
     case "$label" in ''|*[!A-Za-z0-9_.-]*) echo "label が不正: '$label'" >&2; return 1 ;; esac
     git -C "$main_root" cat-file -e "$commit^{commit}" 2>/dev/null || { echo "commit が無い: $commit" >&2; return 1; }
     local full; full="$(git -C "$main_root" rev-parse "$commit^{commit}")"; commit="${full:0:7}"
-    echo "# resolved commit=$full label=$label n=$n dur=$dur explore=$explore" >> "$job"
-    say "job $id: commit=$commit label=$label n=$n dur=$dur explore=$explore"
+    echo "# resolved commit=$full label=$label n=$n dur=$dur explore=$explore plan=$plan" >> "$job"
+    say "job $id: commit=$commit label=$label n=$n dur=$dur explore=$explore plan=$plan"
     prepare_worktree "$commit" || return 1
     local k=1 rc out tmp completed=0 lock_retry=0 aborted_streak=0
     tmp="$(mktemp)"
@@ -127,7 +130,7 @@ run_job() { # run_job <jobfile in running/> → 0 done / 1 failed（理由は st
         "$tools/wait_bench.sh" 0
         say "job $id: run $k/$n"
         BENCH_ROOT="$wt" BENCH_RESULTS_DIR="$tools/results" BENCH_EXPLORE="$explore" BENCH_JOB="$id" BENCH_RUN_INDEX="$k" \
-            BENCH_DRIVER="run_queue:$$" BENCH_BUILD_COMMIT="$build_commit" \
+            BENCH_DRIVER="run_queue:$$" BENCH_BUILD_COMMIT="$build_commit" BENCH_PLAN="${plan:+$main_root/$plan}" \
             "$tools/bench.sh" "$label" "$dur" > "$tmp" 2>&1; rc=$?
         cat "$tmp" >> "$log"
         if { [ "$rc" -eq 3 ] || [ "$rc" -eq 5 ]; } && [ "$lock_retry" -lt 20 ]; then   # ロック競合・他コンテナあり: 同じ回をやり直す

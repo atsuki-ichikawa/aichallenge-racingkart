@@ -44,6 +44,7 @@ aichallenge/research_tools/run_queue.sh [--once] [--poll 30] # queue/ を古い�
 - worktree は初回に自動で作る（build/・install/ をコピー、AWSIM はハードリンク、.env はリンク）。C++・msg・CMake など、コピーした build/ に反映されない変更が commit に含まれていればジョブは failed（`要リビルド`）。Python・yaml・csv の変更だけなら走る。
 - ジョブの記録は `queue/done/`・`queue/failed/` の `.job` ファイル（解決した commit、各回の終了コードと結果ディレクトリ、completed 回数、失敗理由）。詳細は `queue/README.md`。
 - `queue/STOP` を置くと今の走行の後で止まる。
+- 事前登録: ジョブ行に `plan=<plan.md のパス>` を付けると bench.sh が plan.md の最終コミットと sha256 を meta.json に記録する。未コミット／dirty なら `--explore` でない限り走らない（方針 §7）。plan.md は `experiments/<ID>/plan.md` に置く。
 
 ## 検査する: `test.sh`
 

@@ -19,3 +19,11 @@ repos:
     hooks:
       - id: shfmt
         args: [-w, -s, -i=4]
+
+  # fork: 研究ツールとテストだけ ruff（check のみ、修正はしない）
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.4
+    hooks:
+      - id: ruff-check
+        args: [--no-fix]
+        files: ^(aichallenge/research_tools/.*\.py|aichallenge/workspace/src/aichallenge_submit/multi_purpose_mpc_ros/test/test_mpc_core\.py)$

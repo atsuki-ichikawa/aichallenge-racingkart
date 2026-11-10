@@ -130,8 +130,8 @@ run_job() { # run_job <jobfile in running/> → 0 done / 1 failed（理由は st
             BENCH_DRIVER="run_queue:$$" BENCH_BUILD_COMMIT="$build_commit" \
             "$tools/bench.sh" "$label" "$dur" > "$tmp" 2>&1; rc=$?
         cat "$tmp" >> "$log"
-        if [ "$rc" -eq 3 ] && [ "$lock_retry" -lt 20 ]; then   # ロック競合: 同じ回をやり直す
-            lock_retry=$((lock_retry + 1)); say "job $id: ロック競合、待って再試行 ($lock_retry)"; sleep 15; continue
+        if { [ "$rc" -eq 3 ] || [ "$rc" -eq 5 ]; } && [ "$lock_retry" -lt 20 ]; then   # ロック競合・他コンテナあり: 同じ回をやり直す
+            lock_retry=$((lock_retry + 1)); say "job $id: rc=$rc（ロック競合か他のコンテナ）、待って再試行 ($lock_retry)"; sleep 15; continue
         fi
         out="$(grep -m1 '^RESULT_DIR=' "$tmp")"
         echo "run $k: rc=$rc ${out#RESULT_DIR=}" >> "$job"

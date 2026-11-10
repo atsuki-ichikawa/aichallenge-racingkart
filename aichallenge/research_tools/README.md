@@ -45,6 +45,18 @@ aichallenge/research_tools/run_queue.sh [--once] [--poll 30] # queue/ を古い�
 - ジョブの記録は `queue/done/`・`queue/failed/` の `.job` ファイル（解決した commit、各回の終了コードと結果ディレクトリ、completed 回数、失敗理由）。詳細は `queue/README.md`。
 - `queue/STOP` を置くと今の走行の後で止まる。
 
+## 検査する: `test.sh`
+
+```
+aichallenge/research_tools/test.sh        # bench の走行中なら待ってから、コンテナ内で 3 段を実行。終了コード 0 = 全部通った
+```
+
+1. `multi_purpose_mpc_ros/test/test_mpc_core.py` を **ノードと同じ `.venv` の python**（osqp 0.6.7.post1）で unittest。修正 (a)(b)(c) の振る舞い3本。地図や経路は使わず、直線の偽経路と偽 OSQP で検査する
+2. `multi_purpose_mpc_ros/test/` 全体を system python の pytest（osqp 1.0.5。既存の v2x テストも含む）
+3. `test_research_tools.py`（計測器のゴールデンテスト。results/ の既存5件から出る数値を固定）。host でも `python3 -m unittest aichallenge/research_tools/test_research_tools.py` で動く
+
+pre-commit には ruff（check のみ、対象は research_tools と test_mpc_core.py だけ）を入れてある: `pre-commit run ruff-check --all-files`
+
 ## 集計する: `summarize.py` / `invariant_check.py`
 
 ```

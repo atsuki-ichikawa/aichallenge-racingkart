@@ -1,0 +1,10 @@
+c388dbf baseline_var 5 plan=aichallenge/research_tools/experiments/0001-baseline-variance/plan.md
+# started 2026-11-10T19:26:23+09:00 by run_queue.sh pid 2062408
+# resolved commit=c388dbfae7dfc4d520c54aa526ee709212ef9b8b label=baseline_var n=5 dur=290 explore=0 plan=aichallenge/research_tools/experiments/0001-baseline-variance/plan.md
+run 1: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261110-192623_baseline_var_c388dbf status=completed
+run 2: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261110-193137_baseline_var_c388dbf status=completed
+run 3: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261110-193651_baseline_var_c388dbf status=completed
+run 4: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261110-194205_baseline_var_c388dbf status=completed
+run 5: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261110-194719_baseline_var_c388dbf status=completed
+completed 5/5
+# done 2026-11-10T19:52:33+09:00

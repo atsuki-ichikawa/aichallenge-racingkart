@@ -39,13 +39,18 @@ def fmt(v):
 
 
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    argv = sys.argv[1:]
+    job = None
+    if "--job" in argv:
+        i = argv.index("--job")
+        job = argv[i + 1]
+        del argv[i:i + 2]
+    args = [a for a in argv if not a.startswith("--")]
     if not args:
         print(__doc__, file=sys.stderr)
         return 2
     label = args[0]
     base = Path(args[1]) if len(args) > 1 else Path(__file__).resolve().parent / "results"
-    job = sys.argv[sys.argv.index("--job") + 1] if "--job" in sys.argv else None
     runs = []
     for p in sorted(base.iterdir()):
         if not (p / "meta.json").exists():

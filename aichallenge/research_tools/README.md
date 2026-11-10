@@ -72,6 +72,7 @@ python3 aichallenge/research_tools/invariant_check.py aichallenge/research_tools
 
 - `lap_monitor.py`: `/awsim/status` を購読して周回タイムを表示する（bench.sh が使う）
 - `compare_params.py <config.yaml> <params_runtime.yaml>`: 差があれば終了コード 1
+- `aggregate_runs.py <label> [--job <ID>]`: 同じ label の走行の中央値・最小・最大・1走行の実時間（実験 report 用）
 
 ## `results/` の旧結果（2026-11-10 に新形式へ移した）
 

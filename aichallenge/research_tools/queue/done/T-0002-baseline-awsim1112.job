@@ -1,0 +1,10 @@
+c388dbf baseline_awsim1112 5 plan=aichallenge/research_tools/experiments/0002-baseline-awsim1112/plan.md
+# started 2026-11-16T18:51:36+09:00 by run_queue.sh pid 74926
+# resolved commit=c388dbfae7dfc4d520c54aa526ee709212ef9b8b label=baseline_awsim1112 n=5 dur=290 explore=0 plan=aichallenge/research_tools/experiments/0002-baseline-awsim1112/plan.md
+run 1: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261116-185136_baseline_awsim1112_c388dbf status=completed
+run 2: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261116-185650_baseline_awsim1112_c388dbf status=completed
+run 3: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261116-190204_baseline_awsim1112_c388dbf status=completed
+run 4: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261116-190718_baseline_awsim1112_c388dbf status=completed
+run 5: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261116-191232_baseline_awsim1112_c388dbf status=completed
+completed 5/5
+# done 2026-11-16T19:17:46+09:00

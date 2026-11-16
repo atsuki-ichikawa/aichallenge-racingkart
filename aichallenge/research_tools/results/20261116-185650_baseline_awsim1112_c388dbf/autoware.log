@@ -1,0 +1,350 @@
+[INFO] [launch]: All log files can be found below /output/20261116-185650/d1/ros/log/2026-11-16-18-56-53-427813-nlplab-System-Product-Name-74
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: The arguments for aichallenge_system_launch.
+[INFO] [launch.user]:  - simulation: true
+[INFO] [launch.user]:  - use_sim_time: true
+[INFO] [launch.user]:  - sensor_model: racing_kart_sensor_kit
+[INFO] [launch.user]:  - launch_vehicle_interface: False
+[INFO] [launch.user]:  - rviz config: /aichallenge/workspace/install/aichallenge_system_launch/share/aichallenge_system_launch/config/autoware.rviz
+[INFO] [launch.user]:  - capture: false
+[INFO] [launch.user]:  - rosbag: false
+[INFO] [launch.user]:  - domain_id: 1
+[INFO] [launch.user]: The arguments for aichallenge_submit_launch.
+[INFO] [launch.user]:  - simulation: true
+[INFO] [launch.user]:  - use_sim_time: true
+[INFO] [launch.user]:  - sensor_model: racing_kart_sensor_kit
+[INFO] [launch.user]:  - launch_vehicle_interface: False
+[INFO] [launch.user]: echo launch param use_sim_time: true launch_vehicle_interface: False sensor_model: racing_kart_sensor_kit
+[INFO] [robot_state_publisher-1]: process started with pid [87]
+[INFO] [vehicle_velocity_converter-2]: process started with pid [89]
+[INFO] [imu_corrector-3]: process started with pid [91]
+[INFO] [gnss_poser-4]: process started with pid [93]
+[INFO] [gyro_odometer-5]: process started with pid [95]
+[INFO] [imu_gnss_poser_node-6]: process started with pid [97]
+[INFO] [ekf_localizer-7]: process started with pid [99]
+[INFO] [twist2accel-8]: process started with pid [101]
+[INFO] [simple_trajectory_generator_node-9]: process started with pid [103]
+[INFO] [run_mpc_controller.bash-10]: process started with pid [105]
+[INFO] [component_container-11]: process started with pid [107]
+[INFO] [rviz2-12]: process started with pid [109]
+[INFO] [relay-13]: process started with pid [111]
+[INFO] [autostart_orchestrator_node.py-14]: process started with pid [113]
+[INFO] [v2x_marker_publisher.py-15]: process started with pid [115]
+[imu_gnss_poser_node-6] [0m[INFO] [1794823014.038477237] [localization.imu_gnss_poser]: Loaded 121 heading-reference points from /aichallenge/workspace/install/imu_gnss_poser/share/imu_gnss_poser/data/heading_reference.csv[0m
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823014.039537731] [planning.scenario_planning.simple_trajectory_generator]: csv_path parameter changed from '' to '/aichallenge/workspace/install/simple_trajectory_generator/share/simple_trajectory_generator/data/raceline_awsim_30km_from_garage.csv'[0m
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823014.039712700] [planning.scenario_planning.simple_trajectory_generator]: Successfully loaded new trajectory from CSV: /aichallenge/workspace/install/simple_trajectory_generator/share/simple_trajectory_generator/data/raceline_awsim_30km_from_garage.csv with 131 points[0m
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823014.039757031] [planning.scenario_planning.simple_trajectory_generator]: z parameter changed to 6.500000[0m
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823014.039866707] [planning.scenario_planning.simple_trajectory_generator]: Loaded trajectory from CSV with 131 points[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823014.041817765] [localization.imu_gnss_poser]: imu_gnss_poser ready (raceline=yes, service=/set_initial_pose)[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043129966] [robot_state_publisher]: got segment base_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043175635] [robot_state_publisher]: got segment camera_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043179632] [robot_state_publisher]: got segment camera_optical_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043181789] [robot_state_publisher]: got segment gnss_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043183696] [robot_state_publisher]: got segment imu_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043185635] [robot_state_publisher]: got segment lidar[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043187702] [robot_state_publisher]: got segment lidar_base_link[0m
+[robot_state_publisher-1] [0m[INFO] [1794823014.043189526] [robot_state_publisher]: got segment sensor_kit_base_link[0m
+[rviz2-12] QPainter::begin: Paint device returned engine == 0, type: 2
+[rviz2-12] QPainter::setPen: Painter not active
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823014.170764526] [autostart_orchestrator]: workflow [1m[34m[BOOT][0m (WAIT_INITIAL_POSE,REQUEST_CONTROL_MODE,IDLE,WAIT_START,RUNNING,RECORDING,WAIT_STOP,AUTO_STOP_DISABLED,STOPPING,POST_PROCESS,FINISHED,ERROR) | vehicle=d1, vehicle_topic=/awsim/state, state=None, capture_started=False, rosbag_running=False, detail=bootstrap[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823014.176405081] [autostart_orchestrator]: workflow [1m[34m[BOOT][0m (WAIT_INITIAL_POSE,REQUEST_CONTROL_MODE,IDLE,WAIT_START,RUNNING,RECORDING,WAIT_STOP,AUTO_STOP_DISABLED,STOPPING,POST_PROCESS,FINISHED,ERROR) | vehicle=d1, vehicle_topic=/awsim/state, state=None, capture_started=False, rosbag_running=False, detail=worker started[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823014.176672470] [autostart_orchestrator]: workflow [1m[34m[WAIT_START][0m (BOOT,WAIT_INITIAL_POSE,REQUEST_CONTROL_MODE,IDLE,RUNNING,RECORDING,WAIT_STOP,AUTO_STOP_DISABLED,STOPPING,POST_PROCESS,FINISHED,ERROR) | vehicle=d1, vehicle_topic=/awsim/state, state=None, capture_started=False, rosbag_running=False, detail=waiting for Grounded, Ready, Start on /awsim/state[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823014.176845747] [autostart_orchestrator]: wait start: Grounded, Ready, Start on /awsim/state[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823014.177112598] [autostart_orchestrator]: Subscribing vehicle state: /awsim/state[0m
+[component_container-11] [0m[INFO] [1794823014.258604495] [map.map_container]: Load Library: /autoware/install/map_loader/lib/liblanelet2_map_loader_node.so[0m
+[component_container-11] [0m[INFO] [1794823014.263785832] [map.map_container]: Found class: rclcpp_components::NodeFactoryTemplate<Lanelet2MapLoaderNode>[0m
+[component_container-11] [0m[INFO] [1794823014.263818163] [map.map_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<Lanelet2MapLoaderNode>[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/map/lanelet2_map_loader' in container '/map/map_container'
+[component_container-11] [0m[INFO] [1794823014.270505517] [map.map_container]: Load Library: /autoware/install/map_loader/lib/liblanelet2_map_visualization_node.so[0m
+[component_container-11] [0m[INFO] [1794823014.271360526] [map.map_container]: Found class: rclcpp_components::NodeFactoryTemplate<Lanelet2MapVisualizationNode>[0m
+[component_container-11] [0m[INFO] [1794823014.271375168] [map.map_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<Lanelet2MapVisualizationNode>[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/map/lanelet2_map_visualization' in container '/map/map_container'
+[component_container-11] [0m[INFO] [1794823014.275022133] [map.lanelet2_map_visualization]: Map is loaded
+[component_container-11] [0m
+[component_container-11] [0m[INFO] [1794823014.276732047] [map.map_container]: Load Library: /autoware/install/map_tf_generator/lib/libvector_map_tf_generator_node.so[0m
+[component_container-11] [0m[INFO] [1794823014.278634728] [map.map_container]: Found class: rclcpp_components::NodeFactoryTemplate<VectorMapTFGeneratorNode>[0m
+[component_container-11] [0m[INFO] [1794823014.278649576] [map.map_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<VectorMapTFGeneratorNode>[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/map/vector_map_tf_generator' in container '/map/map_container'
+[component_container-11] [0m[INFO] [1794823014.282163312] [map.vector_map_tf_generator]: broadcast static tf. map_frame:map, viewer_frame:viewer, x:89648.5, y:43155.8, z:6.5[0m
+[rviz2-12] [0m[INFO] [1794823014.395252164] [rviz2]: Stereo is NOT SUPPORTED[0m
+[rviz2-12] [0m[INFO] [1794823014.395361746] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)[0m
+[rviz2-12] [0m[INFO] [1794823014.418748277] [rviz2]: Stereo is NOT SUPPORTED[0m
+[rviz2-12] [0m[INFO] [1794823014.520706963] [rviz2]: Connected on namespace: /editor_tool_server[0m
+[simple_trajectory_generator_node-9] [33m[WARN] [1794823014.545870038] [planning.scenario_planning.simple_trajectory_generator]: New subscription discovered on topic '/planning/scenario_planning/trajectory', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY_QOS_POLICY[0m
+[simple_trajectory_generator_node-9] [33m[WARN] [1794823014.546047295] [planning.scenario_planning.simple_trajectory_generator]: New subscription discovered on topic '/planning/scenario_planning/trajectory', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY_QOS_POLICY[0m
+[rviz2-12] QObject::connect: No such signal QLineEdit::valueChanged(std::string)
+[rviz2-12] [33m[WARN] [1794823014.685089075] [rcl.logging_rosout]: Publisher already registered for provided node name. If this is due to multiple nodes with the same name then all logs for that logger name will go out over the existing publisher. As soon as any node with that name is destructed it will unregister the publisher, preventing any further logs for that name from being published on the rosout topic.[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823014.835446835] [mpc_controller]: 
+[run_mpc_controller.bash-10] ----- config.yaml -----
+[run_mpc_controller.bash-10] common:
+[run_mpc_controller.bash-10]   save_config: false
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] sim_logger:
+[run_mpc_controller.bash-10]   animation_enabled: false
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] map:
+[run_mpc_controller.bash-10]   # path from pkg share dir
+[run_mpc_controller.bash-10]   yaml_path: "env/final_ver3/occupancy_grid_map.yaml"
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] waypoints:
+[run_mpc_controller.bash-10]   # path from pkg share dir
+[run_mpc_controller.bash-10]   # csv_path: "maps/occupancy_grid_map_waypoints.csv"
+[run_mpc_controller.bash-10]   csv_path: ""
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] obstacles:
+[run_mpc_controller.bash-10]   # path from pkg share dir
+[run_mpc_controller.bash-10]   csv_path: "" # If empty, the obstacles information will be subscribed from the topic
+[run_mpc_controller.bash-10]   # csv_path: "maps/occupancy_grid_map_obstacles.csv"
+[run_mpc_controller.bash-10]   radius: 1.25
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] reference_path:
+[run_mpc_controller.bash-10]   update_by_topic: false # When true, 'circle' must be false
+[run_mpc_controller.bash-10]   # path from pkg share dir
+[run_mpc_controller.bash-10]   # csv_path: ""
+[run_mpc_controller.bash-10]   csv_path: "env/final_ver3/traj_mincurv.csv"
+[run_mpc_controller.bash-10]   resolution: 0.6
+[run_mpc_controller.bash-10]   smoothing_distance: 2
+[run_mpc_controller.bash-10]   max_width: 6.0
+[run_mpc_controller.bash-10]   circular: true
+[run_mpc_controller.bash-10]   use_path_constraints_topic: false
+[run_mpc_controller.bash-10]   use_border_cells_topic: false
+[run_mpc_controller.bash-10]   # use_path_constraints_topic: true
+[run_mpc_controller.bash-10]   # use_border_cells_topic: true
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] bicycle_model:
+[run_mpc_controller.bash-10]   length: 1.087
+[run_mpc_controller.bash-10]   # width: 1.45   # real machine width
+[run_mpc_controller.bash-10]   width: 2.30   # +safety margin
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] mpc:
+[run_mpc_controller.bash-10]   N: 20
+[run_mpc_controller.bash-10]   # Q: [e_y, e_psi, t]
+[run_mpc_controller.bash-10]   # R: [v, delta]
+[run_mpc_controller.bash-10]   # QN: [e_y, e_psi, t]
+[run_mpc_controller.bash-10]   R: [100000.0, 0.0]
+[run_mpc_controller.bash-10]   a_min: -1.6 # m/s^2
+[run_mpc_controller.bash-10]   a_max: 0.7 # m/s^2
+[run_mpc_controller.bash-10]   delta_max_deg: 32.0 # degrees
+[run_mpc_controller.bash-10]   steer_rate_max: 0.35 # rad/s
+[run_mpc_controller.bash-10]   control_rate: 40.0 # Hz
+[run_mpc_controller.bash-10]   steering_tire_angle_gain_var: 1.639
+[run_mpc_controller.bash-10]   # steering_tire_angle_gain_var: 1.0
+[run_mpc_controller.bash-10]   # accel_low_pass_gain: 0.1
+[run_mpc_controller.bash-10]   # steer_low_pass_gain: 0.3
+[run_mpc_controller.bash-10]   accel_low_pass_gain: 1.0
+[run_mpc_controller.bash-10]   steer_low_pass_gain: 1.0
+[run_mpc_controller.bash-10]   wp_id_offset: 2
+[run_mpc_controller.bash-10]   use_max_kappa_pred: true
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## ---------- 究極 ------------- ##
+[run_mpc_controller.bash-10]   ## Lap1: 53s, Lap2: 47s
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   # v_max: 30.0   # km/h
+[run_mpc_controller.bash-10]   # ay_max: 12.0  # m/s^2, maximum lateral acceleration in curves
+[run_mpc_controller.bash-10]   # Q: [600000.0, 100000000.0, 2000000.0]
+[run_mpc_controller.bash-10]   # QN: [1000000.0, 1000000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## --- 高速 (gnss delay 0.3) --- ##
+[run_mpc_controller.bash-10]   ## Lap1: 55s, Lap2: 49s
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   # v_max: 30.0
+[run_mpc_controller.bash-10]   # ay_max: 9.5
+[run_mpc_controller.bash-10]   # Q: [1000000.0, 100000000.0, 850000.0]
+[run_mpc_controller.bash-10]   # QN: [1000000.0, 1000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## --- 高速 (gnss delay 0.4) --- ##
+[run_mpc_controller.bash-10]   ## Lap1: 55s, Lap2: 49s
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   # v_max: 30.0
+[run_mpc_controller.bash-10]   # ay_max: 9.5
+[run_mpc_controller.bash-10]   # Q: [1000000.0, 100000000.0, 1850000.0]
+[run_mpc_controller.bash-10]   # QN: [1000000.0, 1000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## --- 中高速 --- ##
+[run_mpc_controller.bash-10]   ## Lap1: 59s, Lap2: 54s
+[run_mpc_controller.bash-10]   # v_max: 25.0
+[run_mpc_controller.bash-10]   # ay_max: 7.0
+[run_mpc_controller.bash-10]   # Q: [1000000.0, 100000000.0, 850000.0]
+[run_mpc_controller.bash-10]   # QN: [1000000.0, 1000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## --------- 中速 -------------- ##
+[run_mpc_controller.bash-10]   ## Lap1: 67s, Lap2: 64s
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   v_max: 20.0
+[run_mpc_controller.bash-10]   ay_max: 6.5
+[run_mpc_controller.bash-10]   Q: [3000000.0, 90000000.0, 100000.0] # 低速だとインを攻めがちなので、あえて外に膨らむパラメータ
+[run_mpc_controller.bash-10]   QN: [1000000.0, 1000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   ## -------- 低速 -------------- ##
+[run_mpc_controller.bash-10]   ## Lap1: 86s
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10]   # v_max: 15.0
+[run_mpc_controller.bash-10]   # ay_max: 5.5
+[run_mpc_controller.bash-10]   # Q: [5000000.0, 100000000.0, 200000.0] # 低速だとインを攻めがちなので、あえて外に膨らむパラメータ
+[run_mpc_controller.bash-10]   # QN: [1000000.0, 1000.0, 10000.0]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] v2x_obstacle_avoidance:
+[run_mpc_controller.bash-10]   vehicle_radius: 0.5          # [m]
+[run_mpc_controller.bash-10]   v_max_safety: 30.0           # [m/s]
+[run_mpc_controller.bash-10]   position_jump_threshold: 5.0 # [m]
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] -----------------------[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823014.835653340] [mpc_controller]: 
+[run_mpc_controller.bash-10] ----- ref_vel.yaml -----
+[run_mpc_controller.bash-10] ref_vel_configulator:
+[run_mpc_controller.bash-10]   s1:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 1
+[run_mpc_controller.bash-10]   s1_1:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 30
+[run_mpc_controller.bash-10]   s2:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 55
+[run_mpc_controller.bash-10]   s3:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 100
+[run_mpc_controller.bash-10]   s4:
+[run_mpc_controller.bash-10]     ref_vel: 22.0
+[run_mpc_controller.bash-10]     wp_id: 155
+[run_mpc_controller.bash-10]   s5:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 190
+[run_mpc_controller.bash-10]   s6:
+[run_mpc_controller.bash-10]     ref_vel: 22.0
+[run_mpc_controller.bash-10]     wp_id: 265
+[run_mpc_controller.bash-10]   s7:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 290
+[run_mpc_controller.bash-10]   s8:
+[run_mpc_controller.bash-10]     ref_vel: 25.0
+[run_mpc_controller.bash-10]     wp_id: 320
+[run_mpc_controller.bash-10]   s9:
+[run_mpc_controller.bash-10]     ref_vel: 30.0
+[run_mpc_controller.bash-10]     wp_id: 335
+[run_mpc_controller.bash-10] 
+[run_mpc_controller.bash-10] -----------------------[0m
+[run_mpc_controller.bash-10] /aichallenge/workspace/install/multi_purpose_mpc_ros/local/lib/python3.10/dist-packages/multi_purpose_mpc_ros/core/map.py:135: UserWarning: Any labeled images will be returned as a boolean array. Did you mean to use a boolean array?
+[run_mpc_controller.bash-10]   self.data = remove_small_holes(self.data, area_threshold=5,
+[run_mpc_controller.bash-10] /aichallenge/workspace/install/multi_purpose_mpc_ros/local/lib/python3.10/dist-packages/multi_purpose_mpc_ros/core/map.py:135: UserWarning: Any labeled images will be returned as a boolean array. Did you mean to use a boolean array?
+[run_mpc_controller.bash-10]   self.data = remove_small_holes(self.data, area_threshold=5,
+[run_mpc_controller.bash-10] [33m[WARN] [1794823015.247968141] [mpc_controller]: ------------------------------------[0m
+[run_mpc_controller.bash-10] [33m[WARN] [1794823015.248152686] [mpc_controller]: use_sim_time is enabled![0m
+[run_mpc_controller.bash-10] [33m[WARN] [1794823015.248300144] [mpc_controller]: ------------------------------------[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823015.248980217] [mpc_controller]: wait until clock received...[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823024.182896166] [localization.imu_gnss_poser]: Publishing initial_pose3d[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823024.183014378] [localization.imu_gnss_poser]: Called EKF trigger[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.186845396] [mpc_controller]: >> OK![0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.187149998] [mpc_controller]: wait until odometry received...[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823024.288886183] [localization.imu_gnss_poser]: EKF trigger: success=true[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.308718816] [mpc_controller]: >> OK![0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.309501609] [mpc_controller]: ----------------------[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.309650986] [mpc_controller]: START![0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823024.309770186] [mpc_controller]: ----------------------[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823026.326745825] [autostart_orchestrator]: start condition met: /awsim/state == Grounded[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823026.327144762] [localization.imu_gnss_poser]: published initial pose (yaw 127.0 deg)[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823026.327740736] [autostart_orchestrator]: initial pose: success=True msg=published initial pose (yaw 127.0 deg)[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823026.328305568] [autostart_orchestrator]: control mode request: success=True msg=published to /awsim/control_mode_request_topic data=True[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823026.328514518] [autostart_orchestrator]: capture/rosbag are disabled; running without recording[0m
+[run_mpc_controller.bash-10] Using given reference path
+[run_mpc_controller.bash-10] Using given reference path
+[run_mpc_controller.bash-10] use normal ackermann control command
+[run_mpc_controller.bash-10] Relaxed safety margin by 0.6505382386916236 (2/5) to solve the problem
+[run_mpc_controller.bash-10] Relaxed safety margin by 0.9758073580374353 (3/5) to solve the problem
+[run_mpc_controller.bash-10] Relaxed safety margin by 1.3010764773832473 (4/5) to solve the problem
+[run_mpc_controller.bash-10] Relaxed safety margin by 0.9758073580374353 (3/5) to solve the problem
+[run_mpc_controller.bash-10] Relaxed safety margin by 1.3010764773832473 (4/5) to solve the problem
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=494 status={'maximum iterations reached': 115, 'primal infeasible inaccurate': 20, 'solved inaccurate': 33, 'primal infeasible': 8, 'solved': 318} iter_mean=1434 iter_max=4000 t_mean=4.39ms t_p99=10.29ms max_raw_delta=33.2deg fallbacks=1 rejected=94 setups=1
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=25 iter_max=75 t_mean=2.36ms t_p99=3.19ms max_raw_delta=3.2deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=93 iter_max=1425 t_mean=2.43ms t_p99=4.21ms max_raw_delta=17.8deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=117 iter_max=2250 t_mean=2.36ms t_p99=5.50ms max_raw_delta=18.7deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 395, 'solved inaccurate': 5} iter_mean=410 iter_max=4000 t_mean=3.16ms t_p99=10.14ms max_raw_delta=18.7deg fallbacks=0 rejected=0 setups=0
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823084.059579103] [planning.scenario_planning.simple_trajectory_generator]: Published trajectory with 131 points[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 398, 'solved inaccurate': 2} iter_mean=329 iter_max=4000 t_mean=2.89ms t_p99=6.98ms max_raw_delta=16.8deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 384, 'solved inaccurate': 16} iter_mean=557 iter_max=4000 t_mean=3.33ms t_p99=10.76ms max_raw_delta=18.0deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=175 iter_max=3775 t_mean=2.62ms t_p99=6.77ms max_raw_delta=16.3deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 399, 'solved inaccurate': 1} iter_mean=188 iter_max=4000 t_mean=2.74ms t_p99=7.80ms max_raw_delta=14.2deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [0m[INFO] [1794823115.850756274] [mpc_controller]: [32mLap 1 completed! Lap time: 73.1644287109375 s[0m[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=78 iter_max=875 t_mean=2.50ms t_p99=5.68ms max_raw_delta=17.8deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=117 iter_max=2800 t_mean=2.40ms t_p99=4.86ms max_raw_delta=18.2deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 393, 'solved inaccurate': 7} iter_mean=384 iter_max=4000 t_mean=3.02ms t_p99=10.60ms max_raw_delta=19.0deg fallbacks=0 rejected=0 setups=0
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823145.049992769] [planning.scenario_planning.simple_trajectory_generator]: Published trajectory with 131 points[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=190 iter_max=3300 t_mean=2.73ms t_p99=6.77ms max_raw_delta=17.1deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 383, 'solved inaccurate': 17} iter_mean=587 iter_max=4000 t_mean=3.28ms t_p99=10.27ms max_raw_delta=18.9deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=149 iter_max=3850 t_mean=2.61ms t_p99=5.64ms max_raw_delta=14.8deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=166 iter_max=3125 t_mean=2.64ms t_p99=8.24ms max_raw_delta=14.1deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [0m[INFO] [1794823185.358234042] [mpc_controller]: [32mLap 2 completed! Lap time: 69.43148040771484 s[0m[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=89 iter_max=1675 t_mean=2.39ms t_p99=4.62ms max_raw_delta=18.0deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=94 iter_max=1500 t_mean=2.57ms t_p99=6.82ms max_raw_delta=18.5deg fallbacks=0 rejected=0 setups=0
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823205.055619885] [planning.scenario_planning.simple_trajectory_generator]: Published trajectory with 131 points[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 395, 'solved inaccurate': 5} iter_mean=364 iter_max=4000 t_mean=2.90ms t_p99=10.57ms max_raw_delta=18.6deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 398, 'solved inaccurate': 2} iter_mean=220 iter_max=4000 t_mean=2.69ms t_p99=8.50ms max_raw_delta=17.0deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 375, 'solved inaccurate': 25} iter_mean=650 iter_max=4000 t_mean=3.55ms t_p99=10.88ms max_raw_delta=19.0deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=91 iter_max=1200 t_mean=2.42ms t_p99=3.69ms max_raw_delta=13.9deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [0m[INFO] [1794823254.254382748] [mpc_controller]: [32mLap 3 completed! Lap time: 68.85679626464844 s[0m[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 399, 'solved inaccurate': 1} iter_mean=158 iter_max=4000 t_mean=2.61ms t_p99=7.32ms max_raw_delta=14.3deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=109 iter_max=2275 t_mean=2.60ms t_p99=5.89ms max_raw_delta=18.0deg fallbacks=0 rejected=0 setups=0
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823266.056012257] [planning.scenario_planning.simple_trajectory_generator]: Published trajectory with 131 points[0m
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=119 iter_max=2175 t_mean=2.48ms t_p99=4.83ms max_raw_delta=18.7deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 393, 'solved inaccurate': 7} iter_mean=372 iter_max=4000 t_mean=2.97ms t_p99=10.24ms max_raw_delta=18.5deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 399, 'solved inaccurate': 1} iter_mean=210 iter_max=4000 t_mean=2.71ms t_p99=6.74ms max_raw_delta=16.6deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 365, 'solved inaccurate': 35} iter_mean=857 iter_max=4000 t_mean=3.81ms t_p99=10.86ms max_raw_delta=19.0deg fallbacks=0 rejected=0 setups=0
+[run_mpc_controller.bash-10] [mpc_stats] calls=400 solves=400 status={'solved': 400} iter_mean=114 iter_max=2050 t_mean=2.65ms t_p99=4.90ms max_raw_delta=14.8deg fallbacks=0 rejected=0 setups=0
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [v2x_marker_publisher.py-15]: sending signal 'SIGINT' to process[v2x_marker_publisher.py-15]
+[INFO] [autostart_orchestrator_node.py-14]: sending signal 'SIGINT' to process[autostart_orchestrator_node.py-14]
+[INFO] [relay-13]: sending signal 'SIGINT' to process[relay-13]
+[INFO] [rviz2-12]: sending signal 'SIGINT' to process[rviz2-12]
+[INFO] [component_container-11]: sending signal 'SIGINT' to process[component_container-11]
+[INFO] [run_mpc_controller.bash-10]: sending signal 'SIGINT' to process[run_mpc_controller.bash-10]
+[INFO] [simple_trajectory_generator_node-9]: sending signal 'SIGINT' to process[simple_trajectory_generator_node-9]
+[INFO] [twist2accel-8]: sending signal 'SIGINT' to process[twist2accel-8]
+[INFO] [ekf_localizer-7]: sending signal 'SIGINT' to process[ekf_localizer-7]
+[INFO] [imu_gnss_poser_node-6]: sending signal 'SIGINT' to process[imu_gnss_poser_node-6]
+[INFO] [gyro_odometer-5]: sending signal 'SIGINT' to process[gyro_odometer-5]
+[INFO] [gnss_poser-4]: sending signal 'SIGINT' to process[gnss_poser-4]
+[INFO] [imu_corrector-3]: sending signal 'SIGINT' to process[imu_corrector-3]
+[INFO] [vehicle_velocity_converter-2]: sending signal 'SIGINT' to process[vehicle_velocity_converter-2]
+[INFO] [robot_state_publisher-1]: sending signal 'SIGINT' to process[robot_state_publisher-1]
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823318.362297876] [autostart_orchestrator]: KeyboardInterrupt received, shutting down node gracefully.[0m
+[autostart_orchestrator_node.py-14] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[relay-13] [0m[INFO] [1794823318.362613759] [rclcpp]: signal_handler(signum=2)[0m
+[rviz2-12] [0m[INFO] [1794823318.363379340] [rclcpp]: signal_handler(signum=2)[0m
+[component_container-11] [0m[INFO] [1794823318.364202531] [rclcpp]: signal_handler(signum=2)[0m
+[simple_trajectory_generator_node-9] [0m[INFO] [1794823318.365899700] [rclcpp]: signal_handler(signum=2)[0m
+[run_mpc_controller.bash-10] [0m[INFO] [1794823318.366019267] [mpc_controller]: Shutdown requested[0m
+[twist2accel-8] [0m[INFO] [1794823318.366672521] [rclcpp]: signal_handler(signum=2)[0m
+[run_mpc_controller.bash-10] [33m[WARN] [1794823318.366936412] [mpc_controller]: ----------------------[0m
+[ekf_localizer-7] [0m[INFO] [1794823318.367396567] [rclcpp]: signal_handler(signum=2)[0m
+[run_mpc_controller.bash-10] [33m[WARN] [1794823318.368053389] [mpc_controller]: Stopping...[0m
+[imu_gnss_poser_node-6] [0m[INFO] [1794823318.368105957] [rclcpp]: signal_handler(signum=2)[0m
+[run_mpc_controller.bash-10] [33m[WARN] [1794823318.368393275] [mpc_controller]: ----------------------[0m
+[gyro_odometer-5] [0m[INFO] [1794823318.368793837] [rclcpp]: signal_handler(signum=2)[0m
+[gnss_poser-4] [0m[INFO] [1794823318.369605558] [rclcpp]: signal_handler(signum=2)[0m
+[imu_corrector-3] [0m[INFO] [1794823318.370296639] [rclcpp]: signal_handler(signum=2)[0m
+[vehicle_velocity_converter-2] [0m[INFO] [1794823318.370999986] [rclcpp]: signal_handler(signum=2)[0m
+[robot_state_publisher-1] [0m[INFO] [1794823318.371701278] [rclcpp]: signal_handler(signum=2)[0m
+[ERROR] [rviz2-12]: process has died [pid 109, exit code -11, cmd '/opt/ros/humble/lib/rviz2/rviz2 -d /aichallenge/workspace/install/aichallenge_system_launch/share/aichallenge_system_launch/config/autoware.rviz -s /aichallenge/workspace/install/aichallenge_system_launch/share/aichallenge_system_launch/rviz/image/autoware.png --ros-args -r __node:=rviz2 -p use_sim_time:=True -p wheel_radius:=0.24 -p wheel_width:=0.18 -p wheel_base:=1.087 -p wheel_tread:=1.12 -p front_overhang:=0.467 -p rear_overhang:=0.51 -p left_overhang:=0.09 -p right_overhang:=0.09 -p vehicle_height:=2.2 -p max_steer_angle:=0.64'].
+[INFO] [relay-13]: process has finished cleanly [pid 111]
+[INFO] [simple_trajectory_generator_node-9]: process has finished cleanly [pid 103]
+[INFO] [twist2accel-8]: process has finished cleanly [pid 101]
+[autostart_orchestrator_node.py-14] [33m[WARN] [1794823319.392361821] [autostart_orchestrator]: skip latest link for result-details.json (target not found)[0m
+[INFO] [vehicle_velocity_converter-2]: process has finished cleanly [pid 89]
+[autostart_orchestrator_node.py-14] [33m[WARN] [1794823319.392582142] [autostart_orchestrator]: skip latest link for result-summary.json (target not found)[0m
+[autostart_orchestrator_node.py-14] [33m[WARN] [1794823319.392768285] [autostart_orchestrator]: skip latest link for capture.mp4 (target not found)[0m
+[autostart_orchestrator_node.py-14] [33m[WARN] [1794823319.392955600] [autostart_orchestrator]: skip latest link for rosbag2_autoware.mcap (target not found)[0m
+[autostart_orchestrator_node.py-14] [33m[WARN] [1794823319.393137755] [autostart_orchestrator]: skip latest link for motion_analytics.html (target not found)[0m
+[autostart_orchestrator_node.py-14] [0m[INFO] [1794823319.393420854] [autostart_orchestrator]: latest link updated: /output/latest/d1/autoware.log -> /output/20261116-185650/d1/autoware.log[0m
+[INFO] [imu_corrector-3]: process has finished cleanly [pid 91]
+[INFO] [robot_state_publisher-1]: process has finished cleanly [pid 87]
+[INFO] [imu_gnss_poser_node-6]: process has finished cleanly [pid 97]
+[INFO] [v2x_marker_publisher.py-15]: process has finished cleanly [pid 115]
+[INFO] [gyro_odometer-5]: process has finished cleanly [pid 95]
+[INFO] [gnss_poser-4]: process has finished cleanly [pid 93]
+[INFO] [ekf_localizer-7]: process has finished cleanly [pid 99]
+[ERROR] [autostart_orchestrator_node.py-14]: process has died [pid 113, exit code 3, cmd '/aichallenge/workspace/install/autostart_orchestrator_py/lib/autostart_orchestrator_py/autostart_orchestrator_node.py --ros-args -r __node:=autostart_orchestrator -p use_sim_time:=True -p wheel_radius:=0.24 -p wheel_width:=0.18 -p wheel_base:=1.087 -p wheel_tread:=1.12 -p front_overhang:=0.467 -p rear_overhang:=0.51 -p left_overhang:=0.09 -p right_overhang:=0.09 -p vehicle_height:=2.2 -p max_steer_angle:=0.64 --params-file /aichallenge/workspace/install/autostart_orchestrator_py/share/autostart_orchestrator_py/config/autostart_orchestrator.param.yaml --params-file /tmp/launch_params_ce3burlh --params-file /tmp/launch_params_ha8z9eq5 --params-file /tmp/launch_params_5pcmswuf --params-file /tmp/launch_params_k110yyxd'].
+[INFO] [component_container-11]: process has finished cleanly [pid 107]
+[ERROR] [run_mpc_controller.bash-10]: process[run_mpc_controller.bash-10] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [run_mpc_controller.bash-10]: sending signal 'SIGTERM' to process[run_mpc_controller.bash-10]
+[ERROR] [run_mpc_controller.bash-10]: process has died [pid 105, exit code -15, cmd '/aichallenge/workspace/install/multi_purpose_mpc_ros/lib/multi_purpose_mpc_ros/run_mpc_controller.bash --config_path /aichallenge/workspace/install/multi_purpose_mpc_ros/share/multi_purpose_mpc_ros/config/config.yaml --ref_vel_path /aichallenge/workspace/install/multi_purpose_mpc_ros/share/multi_purpose_mpc_ros/config/ref_vel.yaml --ros-args -r __node:=mpc_controller -p use_sim_time:=True -p wheel_radius:=0.24 -p wheel_width:=0.18 -p wheel_base:=1.087 -p wheel_tread:=1.12 -p front_overhang:=0.467 -p rear_overhang:=0.51 -p left_overhang:=0.09 -p right_overhang:=0.09 -p vehicle_height:=2.2 -p max_steer_angle:=0.64 --params-file /tmp/launch_params_kicaypll --params-file /tmp/launch_params_n7459lfp --params-file /tmp/launch_params_a4gat3kg --params-file /tmp/launch_params_c321sh0v'].

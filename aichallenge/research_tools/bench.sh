@@ -8,6 +8,8 @@
 #                             ロックはその親ディレクトリの .bench.lock（= 置き場が同じなら worktree からでも同じロック）
 #     BENCH_EXPLORE=1         探索用の走行（meta に explore: true。docs には引用しない）
 #     BENCH_JOB / BENCH_RUN_INDEX  run_queue.sh が付けるジョブ ID と何回目か（meta に残る）
+#     BENCH_PLAN=<plan.md>    事前登録の plan.md（方針 §7）。git にコミット済みで dirty でなければ、その最終コミットと sha256 を
+#                             meta に記録する。未コミット／dirty なら BENCH_EXPLORE=1 でない限り起動しない（終了コード 2）
 #     BENCH_DRIVER=<文字列>   誰が起動したか（既定 manual。run_queue.sh は run_queue:<pid>）
 #     BENCH_BUILD_COMMIT      worktree にコピーした build/ の出自（run_queue.sh が渡す。meta に残るだけ）
 #
@@ -44,6 +46,7 @@ case "${BENCH_RUN_INDEX:-0}" in *[!0-9]*) echo "bench: BENCH_RUN_INDEX は整数
 
 MAKE="${BENCH_MAKE:-make}"
 ROSBAG="${BENCH_ROSBAG:-1}"
+PLAN="${BENCH_PLAN:-}"
 
 self="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 tools="$(dirname "$self")"             # 計測器（このスクリプトと python 補助）の場所。root とは別でよい
@@ -58,6 +61,20 @@ watch_files=("$submit/multi_purpose_mpc_ros/core/MPC.py" "$submit/multi_purpose_
 result_json="$root/aichallenge/d1-result-details.json"
 summary_json="$root/aichallenge/result-summary.json"
 lock="$(dirname "$results_root")/.bench.lock"
+
+# 事前登録（plan.md）の確認。計測器側（$tools のリポジトリ）でも走らせる側（$root）でもよいので、ファイルのあるリポジトリで見る
+plan_commit=""; plan_sha=""
+if [ -n "$PLAN" ]; then
+    [ -f "$PLAN" ] || { echo "bench: BENCH_PLAN が無い: $PLAN" >&2; exit 2; }
+    plan_dir="$(cd "$(dirname "$PLAN")" && pwd)"; plan_base="$(basename "$PLAN")"
+    if git -C "$plan_dir" ls-files --error-unmatch "$plan_base" >/dev/null 2>&1 && git -C "$plan_dir" diff --quiet HEAD -- "$plan_base"; then
+        plan_commit="$(git -C "$plan_dir" log -1 --format=%H -- "$plan_base")"; plan_sha="$(sha256sum "$PLAN" | cut -d' ' -f1)"
+    elif [ "${BENCH_EXPLORE:-0}" != "1" ]; then
+        echo "bench: plan.md が未コミットか dirty です（$PLAN）。コミットしてから走らせるか、探索なら BENCH_EXPLORE=1" >&2; exit 2
+    else
+        plan_commit="uncommitted"; plan_sha="$(sha256sum "$PLAN" | cut -d' ' -f1)"
+    fi
+fi
 
 commit="$(git -C "$root" rev-parse --short HEAD)"
 git_status="$(git -C "$root" status --porcelain --untracked-files=all)"
@@ -172,6 +189,9 @@ cat > "$res/meta.json" <<EOF2
   "root": $(jstr "$root"),
   "explore": $([ "${BENCH_EXPLORE:-0}" = "1" ] && echo true || echo false),
   "job": $(jstr "${BENCH_JOB:-}"),
+  "plan": $(jstr "$PLAN"),
+  "plan_commit": $(jstr "$plan_commit"),
+  "plan_sha256": $(jstr "$plan_sha"),
   "run_index": ${BENCH_RUN_INDEX:-0},
   "driver": $(jstr "${BENCH_DRIVER:-manual}"),
   "tools_root": $(jstr "$tools"),

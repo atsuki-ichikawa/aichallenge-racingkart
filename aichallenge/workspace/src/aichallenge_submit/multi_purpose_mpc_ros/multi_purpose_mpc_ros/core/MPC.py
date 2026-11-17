@@ -224,7 +224,7 @@ class MPC:
         xmin_dyn[0] = xmax_dyn[0] = self.model.spatial_state.e_y
         xmin_dyn[self.nx::self.nx] = lb
         xmax_dyn[self.nx::self.nx] = ub
-        xr[self.nx::self.nx] = (lb + ub) / 2
+        xr[self.nx::self.nx] = 0.0  # T-0001: 横位置の目標は線の上 (e_y = 0)。旧: (lb + ub) / 2 = 帯の真ん中
 
         # 等式制約（LTVダイナミクス）+ 箱制約 + ステアリングレート制約を固定パターンで構築
         n_rate_constraints = N - 1

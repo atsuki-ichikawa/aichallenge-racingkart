@@ -48,7 +48,7 @@ mpc:
   a_min: -1.6 # m/s^2
   a_max: 0.7 # m/s^2
   delta_max_deg: 32.0 # degrees
-  steer_rate_max: 0.35 # rad/s
+  steer_rate_max: 1.746 # rad/s  T-0003（探索）: 実角 60 度/秒 = シミュレーターの上限。元は 0.35（実角 12.0 度/秒）
   control_rate: 40.0 # Hz
   steering_tire_angle_gain_var: 1.639
   # steering_tire_angle_gain_var: 1.0

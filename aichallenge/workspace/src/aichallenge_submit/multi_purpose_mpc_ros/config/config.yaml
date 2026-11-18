@@ -23,8 +23,8 @@ reference_path:
   update_by_topic: false # When true, 'circle' must be false
   # path from pkg share dir
   # csv_path: ""
-  # T-0002（探索）: 手で引いた線。新しいファイルはビルドし直すまで share に出ないので、src の場所を直接指す
-  csv_path: "../../../../src/aichallenge_submit/multi_purpose_mpc_ros/env/final_ver3/traj_hand_20261117-204146.csv"
+  # T-0005（探索）: 円弧と直線の線（円弧の表 arcs_hand_20261118-165241.csv から作り直した点）。新しいファイルはビルドし直すまで share に出ないので、src の場所を直接指す
+  csv_path: "../../../../src/aichallenge_submit/multi_purpose_mpc_ros/env/final_ver3/traj_arcs_20261118-165241.csv"
   resolution: 0.6
   smoothing_distance: 2
   max_width: 6.0

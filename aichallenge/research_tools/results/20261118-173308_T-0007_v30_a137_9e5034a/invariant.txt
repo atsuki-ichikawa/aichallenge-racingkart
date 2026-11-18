@@ -1,0 +1,3 @@
+FAIL I6 rejected_n=357 fallback_n=0 (expected 0/0)
+FAIL I8 penalty wall=3
+invariant: fails=2 checked=I5,I6,I7,I8 skipped=I9 | status: maximum_iterations=0 primal_infeasible*=357 (要確認、失格ではない)

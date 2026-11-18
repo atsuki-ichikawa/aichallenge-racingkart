@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>線を引く</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; font: 13px sans-serif; color: #222; }
+  body { display: flex; flex-direction: column; }
+  #bar, #help, #stat { padding: 3px 8px; background: #f3f3f3; }
+  #bar { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; }
+  #help { border-bottom: 1px solid #ccc; color: #555; }
+  #stat { border-top: 1px solid #ccc; font-family: monospace; white-space: nowrap; overflow: hidden; }
+  #wrap { flex: 1; min-height: 0; position: relative; }
+  canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+  .sw { display: inline-block; width: 11px; height: 11px; border: 1px solid #888; vertical-align: -1px; }
+</style>
+<div id="bar">
+  <button id="undo">元に戻す (Ctrl+Z)</button>
+  <label>一緒に動く範囲 <input id="range" type="range" min="0" max="20" step="0.5" value="5"> <span id="rangeV"></span> m</label>
+  <button id="save">CSV を書き出す</button>
+  <label>続きから（CSV を読み込む） <input id="load" type="file" accept=".csv"></label>
+  <button id="circ"></button>
+  <label><input id="arc" type="checkbox"> 補助円をつないで線にする（円弧と直線）</label>
+  <button id="saveArc">円弧の表を書き出す</button>
+</div>
+<div id="help">
+  点をドラッグ: 動かす ／ 背景をドラッグ: 地図を動かす ／ 線の上でダブルクリック: 点を足す ／ 点を右クリック: 消す ／ ホイール: 拡大 ／ 補助円（■）: 点をドラッグで動かす、右クリックで円を消す ／ 円弧の線: 補助円を走る所に置いて印を付ける（その間、点は動かせない）
+  <span class="sw" style="background:#fff"></span> 壁から <span id="mg"></span> m 以上（目安）
+  <span class="sw" style="background:#ffdcaa"></span> それ未満
+  <span class="sw" style="background:#555"></span> 壁
+  <span style="color:#999">━</span> 今の線 <span style="color:#1565c0">━</span> 編集中 <span style="color:#2e7d32">●</span> 始点 <span style="color:#d50000">●</span> 帯の外 <span style="color:#8e24aa">━</span> 補助円 <span style="color:#8e24aa">○</span> 円弧の始まり・終わり
+</div>
+<div id="wrap"><canvas id="cv"></canvas></div>
+<div id="stat"></div>
+<script src="data.js"></script>
+<script>
+'use strict';
+// 線を手で引く道具。制御器が読むのは x_m・y_m だけ（core/utils.py load_ref_path、mpc_controller.py）。
+const D = window.LINE_DATA;
+const MARGIN = D.width / Math.SQRT2;          // BicycleModel._compute_safety_margin と同じ
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+
+// ---- 地図: 1 = 走れるマス。マス (c, r) の中心は (ox + c*res, oy + (H-1-r)*res)（core/map.py m2w と同じ）
+const bin = atob(D.free_bits_b64), W = D.W, H = D.H;
+const free = new Uint8Array(W * H);
+for (let i = 0; i < free.length; i++) free[i] = (bin.charCodeAt(i >> 3) >> (i & 7)) & 1;
+// 壁のマスの中心から MARGIN 未満のマスに印を付ける（線に関係なく引ける目安。制御器は線の法線の向きに測る）
+const near = new Uint8Array(W * H), rc = MARGIN / D.res, R = Math.ceil(rc), disc = [];
+for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) if (dx * dx + dy * dy < rc * rc) disc.push([dx, dy]);
+for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+  const i = r * W + c;
+  if (free[i]) continue;
+  if (!((c > 0 && free[i - 1]) || (c < W - 1 && free[i + 1]) || (r > 0 && free[i - W]) || (r < H - 1 && free[i + W]))) continue;
+  for (const [dx, dy] of disc) {
+    const x = c + dx, y = r + dy;
+    if (x >= 0 && x < W && y >= 0 && y < H) near[y * W + x] = 1;
+  }
+}
+const mapCv = document.createElement('canvas');
+mapCv.width = W; mapCv.height = H;
+const img = new ImageData(W, H);
+for (let i = 0; i < W * H; i++) {
+  const col = !free[i] ? [85, 85, 85] : near[i] ? [255, 220, 170] : [255, 255, 255];
+  img.data.set([col[0], col[1], col[2], 255], i * 4);
+}
+mapCv.getContext('2d').putImageData(img, 0, 0);
+
+// ---- 線: 閉じた点の列（最後の点＝最初の点 の重複は持たない）
+function parseCsv(text) {
+  const lines = text.trim().split(/\r?\n/), head = lines[0].split(',').map(s => s.trim());
+  const ix = head.indexOf('x_m'), iy = head.indexOf('y_m');
+  if (ix < 0 || iy < 0) throw new Error('x_m・y_m の列がありません');
+  const P = lines.slice(1).map(l => { const c = l.split(','); return [parseFloat(c[ix]), parseFloat(c[iy])]; });
+  if (P.length < 10 || P.some(p => !isFinite(p[0]) || !isFinite(p[1]))) throw new Error('点が読めません');
+  if (Math.hypot(P[0][0] - P[P.length - 1][0], P[0][1] - P[P.length - 1][1]) < 1e-6) P.pop();
+  return P;
+}
+// s（道のり。n+1 個、最後が1周の長さ）、psi（進む向き − π/2。今の CSV と同じ決め方）、kappa（左曲がりが正）
+function geom(P) {
+  const n = P.length, s = [0], psi = [], kappa = [];
+  for (let i = 0; i < n; i++) {
+    const a = P[(i - 1 + n) % n], p = P[i], b = P[(i + 1) % n];
+    s.push(s[i] + Math.hypot(b[0] - p[0], b[1] - p[1]));
+    let h = Math.atan2(b[1] - a[1], b[0] - a[0]) - Math.PI / 2;
+    if (h <= -Math.PI) h += 2 * Math.PI;
+    psi.push(h);
+    const cross = (p[0] - a[0]) * (b[1] - p[1]) - (p[1] - a[1]) * (b[0] - p[0]);
+    const den = Math.hypot(p[0] - a[0], p[1] - a[1]) * Math.hypot(b[0] - p[0], b[1] - p[1]) * Math.hypot(b[0] - a[0], b[1] - a[1]);
+    kappa.push(den > 0 ? 2 * cross / den : 0);
+  }
+  return { s, psi, kappa };
+}
+function buildCsv() {
+  const n = pts.length, g = geom(pts), rows = ['s_m,x_m,y_m,psi_rad,kappa_radpm'];
+  for (let i = 0; i <= n; i++) {
+    const j = i % n;
+    rows.push([g.s[i], pts[j][0], pts[j][1], g.psi[j], g.kappa[j]].map(v => v.toFixed(7)).join(', '));
+  }
+  return rows.join('\n') + '\n';
+}
+// ---- 帯: 制御器と同じ手順をまねる（core/reference_path.py の _construct_path・_compute_width・_get_min_width）。
+// 制御器の出力と点ごとに照合した結果は README。判定の正本は check_line.sh。
+function lineAA(r0, c0, r1, c1, visit) {   // skimage.draw.line_aa と同じ順にマスを渡す。visit が true を返したら止める
+  const dc = Math.abs(c0 - c1), dr = Math.abs(r0 - r1), sc = c0 < c1 ? 1 : -1, sr = r0 < r1 ? 1 : -1;
+  const ed = dc + dr === 0 ? 1 : Math.sqrt(dc * dc + dr * dr);
+  let err = dc - dr, c = c0, r = r0;
+  for (;;) {
+    if (visit(r, c)) return;
+    const e = err, cp = c;
+    if (2 * e >= -dc) {
+      if (c === c1) return;
+      if (e + dr < ed && visit(r + sr, c)) return;
+      err -= dr; c += sc;
+    }
+    if (2 * e <= dr) {
+      if (r === r1) return;
+      if (dc - e < ed && visit(r, cp + sc)) return;
+      err += dc; r += sr;
+    }
+  }
+}
+function band(P) {   // 閉じた点の列 → 制御器が持つ点ごとの [x, y, lb, ub]（線から右・左の帯の端まで。MARGIN を引いた後）
+  const B = D.band, T = 2 * Math.PI, clamp = (v, hi) => Math.max(0, Math.min(hi, v));
+  const X = P.concat([P[0]], P.slice(0, B.smooth * 3)), rs = [], sm = [];
+  for (let i = 0; i + 1 < X.length; i++) {   // B.res ごとに取り直す
+    const a = X[i], b = X[i + 1], n = Math.max(1, Math.trunc(Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2) / B.res));
+    for (let j = 0; j < n; j++) rs.push([a[0] + j * ((b[0] - a[0]) / n), a[1] + j * ((b[1] - a[1]) / n)]);
+  }
+  rs.push(X[X.length - 1]);
+  for (let i = B.smooth; i < rs.length - B.smooth; i++) {   // 前後 B.smooth 点でならす
+    let x = 0, y = 0;
+    for (let j = i - B.smooth; j <= i + B.smooth; j++) { x += rs[j][0]; y += rs[j][1]; }
+    sm.push([x / (2 * B.smooth + 1), y / (2 * B.smooth + 1)]);
+  }
+  const w2m = (x, y) => [clamp(Math.trunc((x - D.ox) / D.res + 0.5), W - 1), clamp(Math.trunc((H - 1) - (y - D.oy) / D.res + 0.5), H - 1)];
+  const m2w = (c, r) => [c * D.res + D.ox, (H - 1 - r) * D.res + D.oy];
+  return sm.slice(0, -1).map((p, i) => {
+    const psi = Math.atan2(sm[i + 1][1] - p[1], sm[i + 1][0] - p[0]), [cx, cy] = w2m(p[0], p[1]), [wx, wy] = m2w(cx, cy);
+    const width = turn => {   // 法線の向きに B.maxw まで見て、最初の壁のマスまでの距離
+      let ang = (psi + turn + Math.PI) % T; if (ang < 0) ang += T; ang -= Math.PI;
+      const [ax, ay] = w2m(wx + B.maxw * Math.cos(ang), wy + B.maxw * Math.sin(ang));
+      let hit = null, far = null, fd = Infinity;
+      for (let i = -1; i <= 1 && !hit; i++) for (let j = -1; j <= 1 && !hit; j++) {
+        lineAA(cx, cy, clamp(ax + i, W - 1), clamp(ay + j, H - 1), (x, y) => {
+          if (x < 0 || x >= W || y < 0 || y >= H) return false;
+          if (!free[y * W + x]) { hit = [x, y]; return true; }
+          const d = (x - ax) ** 2 + (y - ay) ** 2;
+          if (d < fd) { fd = d; far = [x, y]; }
+          return false;
+        });
+      }
+      const e = m2w(...(hit || far));
+      return Math.hypot(wx - e[0], wy - e[1]);
+    };
+    return [p[0], p[1], MARGIN - width(-Math.PI / 2), width(Math.PI / 2) - MARGIN];
+  });
+}
+const orig = parseCsv(D.csv);
+let pts = orig.map(p => p.slice()), undo = [], dirty = false;
+function pushUndo() { undo.push(pts.map(p => p.slice())); if (undo.length > 200) undo.shift(); dirty = true; }
+function doUndo() { if (undo.length) { pts = undo.pop(); $('arc').checked = false; draw(); } }
+
+// ---- 表示: 画面 = ((x - ox) * k + tx, ty - (y - oy) * k)
+let k = 1, tx = 0, ty = 0, cw = 0, ch = 0, hover = -1, mouse = null, touched = false;
+const toScreen = p => [(p[0] - D.ox) * k + tx, ty - (p[1] - D.oy) * k];
+const toWorld = (sx, sy) => [D.ox + (sx - tx) / k, D.oy + (ty - sy) / k];
+function resize(fit) {
+  const dpr = window.devicePixelRatio || 1;
+  cw = $('wrap').clientWidth; ch = $('wrap').clientHeight;
+  cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+  cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
+  if (fit) {
+    k = Math.min(cw / (W * D.res), ch / (H * D.res));
+    tx = (cw - W * D.res * k) / 2; ty = (ch + H * D.res * k) / 2;
+  }
+  draw();
+}
+function stroke(P, color, width) {
+  ctx.beginPath();
+  P.forEach((p, i) => { const [x, y] = toScreen(p); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
+  ctx.closePath(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke();
+}
+// 補助円: 3点を通る円（目安の表示だけ。線にも CSV にも入らない）。一直線なら null
+function circleOf(P) {
+  const bx = P[1][0] - P[0][0], by = P[1][1] - P[0][1], cx = P[2][0] - P[0][0], cy = P[2][1] - P[0][1];
+  const d = 2 * (bx * cy - by * cx), b2 = bx * bx + by * by, c2 = cx * cx + cy * cy;
+  if (Math.abs(d) < 1e-9) return null;
+  const ux = (cy * b2 - by * c2) / d, uy = (bx * c2 - cx * b2) / d;
+  return { c: [P[0][0] + ux, P[0][1] + uy], r: Math.hypot(ux, uy) };
+}
+function drawCircles() {
+  ctx.font = '13px sans-serif';
+  circles.concat(placing ? [placing] : []).forEach(P => {
+    const c = P.length === 3 ? circleOf(P) : null, ai = arcLine ? arcLine.arcs.findIndex(a => a.P === P) : -1, a = arcLine && arcLine.arcs[ai];
+    ctx.strokeStyle = ctx.fillStyle = '#8e24aa'; ctx.lineWidth = 1.5;
+    if (c) { const [x, y] = toScreen(c.c); ctx.beginPath(); ctx.arc(x, y, c.r * k, 0, 7); ctx.stroke(); }
+    P.forEach(q => { const [x, y] = toScreen(q); ctx.fillRect(x - 4, y - 4, 8, 8); });
+    if (P.length < 3) return;
+    if (a) [a.in, a.out].forEach(q => {   // 円弧の始まり・終わり
+      if (!q) return;
+      const [x, y] = toScreen(q);
+      ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
+    });
+    const [x, y] = toScreen(P[1]), text = (a ? `#${ai + 1} ${a.sgn > 0 ? '左' : '右'}曲がり ` : '')
+      + (c ? `半径 ${c.r.toFixed(2)} m（曲率 ${(1 / c.r).toFixed(3)} /m）` : '一直線（円にならない）') + (a && (a.bad || a.warn) ? ` ✕ ${a.bad || a.warn}` : '');
+    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(x + 8, y - 21, ctx.measureText(text).width + 8, 18);
+    ctx.fillStyle = a && (a.bad || a.warn) ? '#d50000' : '#6a1b9a'; ctx.fillText(text, x + 12, y - 8);
+  });
+}
+// ---- 円弧と直線の線: 補助円を「今の線」（灰色）に沿った順に並べ、となりの円と共通の接線でつなぐ。
+// 順番と曲がる向きは、円の2点目にいちばん近い「今の線」の場所と、そこでの進む向きで決める。
+const og = geom(orig), STEP = 1.0, arcOn = () => !!$('arc').checked;   // STEP: 点の間隔 [m]（今の線と同じくらい）
+function chain() {   // → { arcs, err } か { arcs, pts, L }。arcs は進む順
+  const A = [], T = 2 * Math.PI;
+  circles.forEach(P => {
+    const c = circleOf(P), q = P[1];
+    if (!c) return;
+    let bd = Infinity, so = 0, dir = [1, 0];
+    orig.forEach((a, i) => {
+      const b = orig[(i + 1) % orig.length], ux = b[0] - a[0], uy = b[1] - a[1], l2 = ux * ux + uy * uy;
+      const t = Math.max(0, Math.min(1, ((q[0] - a[0]) * ux + (q[1] - a[1]) * uy) / l2));
+      const d = (a[0] + t * ux - q[0]) ** 2 + (a[1] + t * uy - q[1]) ** 2;
+      if (d < bd) { bd = d; so = og.s[i] + t * Math.sqrt(l2); dir = [ux, uy]; }
+    });
+    const sgn = -(q[1] - c.c[1]) * dir[0] + (q[0] - c.c[0]) * dir[1] >= 0 ? 1 : -1;   // +1 = 左曲がり（中心が進む向きの左）
+    A.push({ P, c: c.c, r: c.r, so, sgn });
+  });
+  A.sort((a, b) => a.so - b.so);
+  if (A.length < 2) return { arcs: A, err: '円が2つ以上要ります' };
+  let bad = 0;
+  A.forEach((a, i) => {   // 次の円への接線: 中心の差 d = L u + h n（u: 進む向き、n: その左、h: 符号つき半径の差）
+    const b = A[(i + 1) % A.length], dx = b.c[0] - a.c[0], dy = b.c[1] - a.c[1], D2 = dx * dx + dy * dy;
+    const h = b.sgn * b.r - a.sgn * a.r, L2 = D2 - h * h;
+    if (D2 === 0 || L2 < 0) {
+      a.bad = `次の円（${a.sgn === b.sgn ? '同じ向き）の中に入っている' : '逆向き）と重なっている'}。あと ${(Math.abs(h) - Math.sqrt(D2)).toFixed(2)} m 離す`;
+      bad++; return;
+    }
+    a.line = Math.sqrt(L2); a.u = [(a.line * dx + h * dy) / D2, (a.line * dy - h * dx) / D2];
+    a.out = [a.c[0] + a.sgn * a.r * a.u[1], a.c[1] - a.sgn * a.r * a.u[0]];
+    b.in = [b.c[0] + b.sgn * b.r * a.u[1], b.c[1] - b.sgn * b.r * a.u[0]];
+  });
+  if (bad) return { arcs: A, err: `つながらない円が ${bad} 個（赤い字）` };
+  let L = 0;
+  A.forEach(a => {   // 円弧: 入る点から出る点まで、曲がる向きに回る
+    a.a0 = Math.atan2(a.in[1] - a.c[1], a.in[0] - a.c[0]);
+    let sw = ((Math.atan2(a.out[1] - a.c[1], a.out[0] - a.c[0]) - a.a0) * a.sgn) % T;
+    if (sw < 0) sw += T;
+    if (sw > T - 1e-9) sw = 0;
+    if (sw > 1.75 * Math.PI) a.warn = '一回りしている（次の円か前の円との並びを見直す）';
+    a.arc = sw * a.r; a.s0 = L; L += a.arc + a.line;
+  });
+  const n = Math.max(10, Math.round(L / STEP)), P = [];
+  for (let j = 0, i = 0; j < n; j++) {   // 1周を n 等分した道のりごとの点
+    const s = j * L / n;
+    while (i + 1 < A.length && s >= A[i + 1].s0) i++;
+    const a = A[i], d = s - a.s0, t = a.a0 + a.sgn * d / a.r;
+    P.push(d < a.arc ? [a.c[0] + a.r * Math.cos(t), a.c[1] + a.r * Math.sin(t)] : [a.out[0] + (d - a.arc) * a.u[0], a.out[1] + (d - a.arc) * a.u[1]]);
+  }
+  let j0 = 0, bd = Infinity;   // 始点は「今の線」の始点にいちばん近い点
+  P.forEach((p, j) => { const d = (p[0] - orig[0][0]) ** 2 + (p[1] - orig[0][1]) ** 2; if (d < bd) { bd = d; j0 = j; } });
+  A.forEach(a => { a.sIn = ((a.s0 - j0 * L / n) % L + L) % L; a.sOut = (a.sIn + a.arc) % L; });
+  return { arcs: A, pts: P.slice(j0).concat(P.slice(0, j0)), L };
+}
+let arcLine = null;   // 円弧の線にしている間の chain() の結果
+function draw() {
+  arcLine = arcOn() ? chain() : null;
+  if (arcLine && arcLine.pts) pts = arcLine.pts;
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#ddd'; ctx.fillRect(0, 0, cw, ch);
+  ctx.imageSmoothingEnabled = false;
+  const [mx, my] = toScreen([D.ox - D.res / 2, D.oy + (H - 0.5) * D.res]);
+  ctx.drawImage(mapCv, mx, my, W * D.res * k, H * D.res * k);
+  stroke(orig, '#999', 1.5);
+  stroke(pts, '#1565c0', 2);
+  const out = band(pts).filter(b => b[3] < b[2] || b[3] < 0 || b[2] > 0);   // 帯がつぶれる点と、帯の外の点
+  out.forEach(b => { const [x, y] = toScreen(b); ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fillStyle = '#d50000'; ctx.fill(); });
+  pts.forEach((p, i) => {
+    const [x, y] = toScreen(p);
+    ctx.beginPath(); ctx.arc(x, y, i === hover ? 6 : i === 0 ? 5 : 3, 0, 7);
+    ctx.fillStyle = i === 0 ? '#2e7d32' : i === hover ? '#e65100' : '#1565c0'; ctx.fill();
+  });
+  drawCircles();
+  const g = geom(pts), n = pts.length;
+  let lo = Infinity, hi = 0;
+  for (let i = 0; i < n; i++) { const d = g.s[i + 1] - g.s[i]; lo = Math.min(lo, d); hi = Math.max(hi, d); }
+  let t = `点 ${n}　1周 ${g.s[n].toFixed(1)} m　点の間隔 最小 ${lo.toFixed(2)} / 最大 ${hi.toFixed(2)} m　帯の外 ${out.length} 点`;
+  if (arcLine) t += `　｜ 円弧の線: ${arcLine.err || `円 ${arcLine.arcs.length} 個` + (arcLine.arcs.some(a => a.warn) ? '、一回りしている円あり（赤い字）' : '')}`;
+  if (mouse) { const w = toWorld(mouse[0], mouse[1]); t += `　｜ カーソル x ${w[0].toFixed(2)}  y ${w[1].toFixed(2)}`; }
+  if (hover >= 0) t += `　｜ 点 #${hover}  道のり ${g.s[hover].toFixed(1)} m`;
+  $('stat').textContent = t + (dirty ? '　｜ 未保存の変更あり' : '');
+}
+
+// ---- 操作
+function hitPoint(sx, sy) {
+  let best = -1, bd = 10 * 10;
+  pts.forEach((p, i) => { const [x, y] = toScreen(p), d = (x - sx) ** 2 + (y - sy) ** 2; if (d < bd) { bd = d; best = i; } });
+  return best;
+}
+function hitSegment(sx, sy) {   // 近い線分（8 px 以内）と、その上の位置 t（0〜1）
+  let best = null, bd = 8 * 8;
+  pts.forEach((p, i) => {
+    const a = toScreen(p), b = toScreen(pts[(i + 1) % pts.length]), ux = b[0] - a[0], uy = b[1] - a[1];
+    const t = Math.max(0, Math.min(1, ((sx - a[0]) * ux + (sy - a[1]) * uy) / (ux * ux + uy * uy || 1)));
+    const d = (a[0] + t * ux - sx) ** 2 + (a[1] + t * uy - sy) ** 2;
+    if (d < bd) { bd = d; best = { i, t }; }
+  });
+  return best;
+}
+const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+function hitHandle(sx, sy) {   // 補助円の点（10 px 以内）
+  for (let ci = 0; ci < circles.length; ci++) for (let pi = 0; pi < 3; pi++) {
+    const [x, y] = toScreen(circles[ci][pi]);
+    if ((x - sx) ** 2 + (y - sy) ** 2 < 100) return { ci, pi };
+  }
+  return null;
+}
+let circles = [], placing = null, lastPlace = -1e9;   // placing: 置いている途中の補助円の点（0〜2 個）
+let drag = null;   // {kind:'point', start, snap, w, moved}、{kind:'pan', start, tx, ty, place, far}、{kind:'handle', hd}
+cv.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const m = pos(e), hd = placing ? null : hitHandle(m[0], m[1]), g = arcOn() ? -1 : hitPoint(m[0], m[1]);   // 円弧の線の間は点を動かさない
+  cv.setPointerCapture(e.pointerId);
+  if (hd) { drag = { kind: 'handle', start: m, hd }; return; }
+  if (placing || g < 0) { drag = { kind: 'pan', start: m, tx, ty, place: !!placing }; return; }
+  // つかんだ点からの道のりで重みを決める: 範囲 R の中は 0.5 * (1 + cos(π d / R))、外は 0
+  const s = geom(pts).s, L = s[pts.length], range = parseFloat($('range').value);
+  const w = pts.map((_, i) => {
+    const d = Math.min(Math.abs(s[i] - s[g]), L - Math.abs(s[i] - s[g]));
+    return i === g ? 1 : d < range ? 0.5 * (1 + Math.cos(Math.PI * d / range)) : 0;
+  });
+  drag = { kind: 'point', start: m, snap: pts.map(p => p.slice()), w, moved: false };
+});
+cv.addEventListener('pointermove', e => {
+  const m = pos(e); mouse = m;
+  if (!drag) { hover = hitPoint(m[0], m[1]); draw(); return; }
+  const dx = m[0] - drag.start[0], dy = m[1] - drag.start[1];
+  if (drag.kind === 'handle') { circles[drag.hd.ci][drag.hd.pi] = toWorld(m[0], m[1]); draw(); return; }
+  if (drag.kind === 'pan') {
+    if (dx * dx + dy * dy > 16) drag.far = true;
+    if (!drag.place || drag.far) { tx = drag.tx + dx; ty = drag.ty + dy; touched = true; draw(); }
+    return;
+  }
+  if (!drag.moved) { if (dx * dx + dy * dy < 4) return; pushUndo(); drag.moved = true; }
+  pts = drag.snap.map((p, i) => [p[0] + drag.w[i] * dx / k, p[1] - drag.w[i] * dy / k]);
+  draw();
+});
+cv.addEventListener('pointerup', () => {
+  if (drag && drag.place && !drag.far && placing) {   // 動かさずに離した = 補助円の点を置く
+    placing.push(toWorld(drag.start[0], drag.start[1])); lastPlace = performance.now();
+    if (placing.length === 3) { circles.push(placing); placing = null; }
+    showCirc(); draw();
+  }
+  drag = null;
+});
+cv.addEventListener('pointerleave', () => { if (!drag) { mouse = null; hover = -1; draw(); } });
+cv.addEventListener('wheel', e => {
+  e.preventDefault();
+  const m = pos(e), w = toWorld(m[0], m[1]);
+  k = Math.max(2, Math.min(400, k * Math.exp(-e.deltaY * 0.0015)));
+  tx = m[0] - (w[0] - D.ox) * k; ty = m[1] + (w[1] - D.oy) * k; touched = true;
+  draw();
+}, { passive: false });
+cv.addEventListener('dblclick', e => {
+  const m = pos(e), h = hitSegment(m[0], m[1]);
+  if (arcOn() || placing || performance.now() - lastPlace < 500) return;   // 補助円を置いている間は足さない
+  if (!h || h.t < 0.1 || h.t > 0.9) return;   // 点のすぐそばには足さない
+  const a = pts[h.i], b = pts[(h.i + 1) % pts.length];
+  pushUndo();
+  pts.splice(h.i + 1, 0, [a[0] + h.t * (b[0] - a[0]), a[1] + h.t * (b[1] - a[1])]);
+  draw();
+});
+cv.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const m = pos(e), hd = hitHandle(m[0], m[1]), g = hitPoint(m[0], m[1]);
+  if (hd) { circles.splice(hd.ci, 1); draw(); return; }
+  if (arcOn() || g < 0 || pts.length <= 10) return;
+  pushUndo(); pts.splice(g, 1); hover = -1; draw();
+});
+window.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); doUndo(); } });
+$('undo').onclick = doUndo;
+function showCirc() { $('circ').textContent = placing ? `補助円: あと ${3 - placing.length} 点クリック（やめる）` : '補助円を置く（3点クリック）'; }
+$('arc').onchange = () => { if (arcOn()) pushUndo(); draw(); };
+$('circ').onclick = () => { placing = placing ? null : []; showCirc(); draw(); };
+$('range').oninput = () => { $('rangeV').textContent = parseFloat($('range').value).toFixed(1); };
+function download(name, text) {
+  const d = new Date(), z = v => String(v).padStart(2, '0');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv' }));
+  a.download = `${name}_${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}.csv`;
+  a.click();
+}
+$('save').onclick = () => { download('traj_hand', buildCsv()); dirty = false; draw(); };
+const ARC_HEAD = 'no,turn,radius_m,cx_m,cy_m,s_in_m,s_out_m,x_in,y_in,x_out,y_out,line_to_next_m,p1x,p1y,p2x,p2y,p3x,p3y';
+function buildArcCsv(ch) {   // 円ごとに1行。s_in・s_out は線の始点からの道のり（円弧に沿った長さ）。p1〜p3 は補助円の3点
+  return [ARC_HEAD].concat(ch.arcs.map((a, i) => [i + 1, a.sgn > 0 ? 'left' : 'right']
+    .concat([a.r, a.c[0], a.c[1], a.sIn, a.sOut, ...a.in, ...a.out, a.line, ...a.P.flat()].map(v => v.toFixed(7))).join(','))).join('\n') + '\n';
+}
+$('saveArc').onclick = () => { const ch = chain(); if (ch.pts) download('arcs_hand', buildArcCsv(ch)); else alert(ch.err); };
+$('load').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  f.text().then(t => {
+    const lines = t.trim().split(/\r?\n/), ix = ['p1x', 'p1y', 'p2x', 'p2y', 'p3x', 'p3y'].map(h => lines[0].split(',').indexOf(h));
+    if (ix[0] < 0) { const P = parseCsv(t); pushUndo(); pts = P; $('arc').checked = false; draw(); return; }
+    const C = lines.slice(1).map(l => { const v = ix.map(i => parseFloat(l.split(',')[i])); return [[v[0], v[1]], [v[2], v[3]], [v[4], v[5]]]; });   // 円弧の表
+    if (C.some(P => P.flat().some(v => !isFinite(v)))) throw new Error('円の点が読めません');
+    pushUndo(); circles = C; $('arc').checked = true; draw();
+  }).catch(err => alert(f.name + ': ' + err.message));
+  e.target.value = '';
+};
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+$('mg').textContent = MARGIN.toFixed(2);
+$('range').oninput();
+showCirc();
+resize(true);
+new ResizeObserver(() => resize(!touched)).observe($('wrap'));   // 拡大・移動をする前なら全体が入るように合わせ直す
+</script>
+</html>

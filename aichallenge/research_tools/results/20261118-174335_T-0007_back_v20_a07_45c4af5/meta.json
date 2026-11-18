@@ -1,0 +1,79 @@
+{
+  "bench_version": 2,
+  "label": "T-0007_back_v20_a07",
+  "commit": "45c4af5",
+  "dirty": false,
+  "branch": "",
+  "duration_sec": 290,
+  "sim_mode": "dev",
+  "root": "/home/k22010/nlp/research/auto_drive/aichallenge-queue",
+  "explore": true,
+  "job": "T-0007-explore2",
+  "plan": "",
+  "plan_commit": "",
+  "plan_sha256": "",
+  "run_index": 1,
+  "driver": "run_queue:1007593",
+  "tools_root": "/home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools",
+  "tools_commit": "0427455",
+  "tools_dirty": true,
+  "sha256_tools": {
+    "bench.sh": "fdf158002752a20b96b9c15a3c7af48ca31082d1ef7529e9730c2308f94813b6",
+    "lap_monitor.py": "21b05fb78ad42ad663a568e47009c32ab585703cf01be0b2d963c163ae56c8bf",
+    "bench_common.py": "2d8c5e98dbbd1cfddbe15f6dc65d6fdd3ee316026bb5c4da2486ab8e3914dcb3",
+    "compare_params.py": "2e929dc5fcd487295c3253502e6649480589cbb832ab871e6f495c845e4103c5",
+    "invariant_check.py": "12ef29970e74d3dd5c8ce54d4343559628f10b893e78627eea2f43e86c06decf"
+  },
+  "build_commit": "4b01c423ee40e2cf314500d4e9c421658130c8b8",
+  "awsim_dir": {
+    "bytes": 668457561,
+    "mtime_x86_64": 1794822449
+  },
+  "make_cmd": "make",
+  "rosbag": true,
+  "compose_file": "docker-compose.yml:docker-compose.gpu.yml:docker-compose.sound.yml",
+  "image_id": "sha256:6af9c0c8deba9637c2da7bdc12043b07b9ed03879a3274905b5441bbd61af7f5",
+  "sha256_dev_sh": "570da148894711f89bedb79dab2e0a6c7be0acdc67b7a796b2c4cb2554ecb2ad",
+  "host": "nlplab-System-Product-Name",
+  "start_time": "2026-11-18T17:43:36+09:00",
+  "load_avg_start": "0.60 1.00 1.11",
+  "output_dir": "output/20261118-174335",
+  "sha256_start": {
+    "MPC.py": "34043052c4ed24ca25963c735bb07b6614b9cd5b4a93786f436ab551f46210a6",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "5e121aeb376f64cccf9e3d905b97440c4aca08ef93e4b6474f3c6aaee52ea5b1"
+  },
+  "status": "completed",
+  "result_json_before": {
+    "mtime": 1794991094,
+    "sha256": "34d53f54013f81e3f07968fae0d17a0421aee549210a2df137996d6847b30231"
+  },
+  "sim_start_time": "2026-11-18T17:43:37+09:00",
+  "container_ids": "9aecc89ef3b110d63846ec5be8a71cab3f1c226244c2fee8f3af34b7e218ec54 aee1688b7bfa0c18838e9ef5f741be7c7429da975bb691c2fd065d6cf4bef0c6 ",
+  "param_override": false,
+  "monitor_start_time": "2026-11-18T17:43:46+09:00",
+  "monitor_end_time": "2026-11-18T17:48:37+09:00",
+  "params_changed_during_run": false,
+  "rosbag_dir": "output/20261118-174335/d1/rosbag2_all",
+  "rosbag_bytes": 22349916,
+  "rosbag_files": 5,
+  "sha256_rosbag_metadata": "2203959726f82f2b562bbc9bf2af706ee6683dd24f86f0e3a5babd271d756bc7",
+  "sim_end_time": "2026-11-18T17:48:48+09:00",
+  "result_json_after": {
+    "mtime": 1794991721,
+    "sha256": "7ad6a18a7050eba07880617a41339f95a483b4345ec112cdde7bcc9c2c479e11"
+  },
+  "lap_n": 4,
+  "sha256_autoware_log": "256f63c9d1f903f8bb959092f044917e448178d0b8a56b11913385d530007572",
+  "autoware_log_lines": 412,
+  "mpc_stats_lines": 29,
+  "invariant_rc": 1,
+  "sha256_end": {
+    "MPC.py": "34043052c4ed24ca25963c735bb07b6614b9cd5b4a93786f436ab551f46210a6",
+    "mpc_controller.py": "99c715c9f9583489730ea24ede8d650ca8ca14ab2ea193b40cf08ffbca74c1f0",
+    "config.yaml": "5e121aeb376f64cccf9e3d905b97440c4aca08ef93e4b6474f3c6aaee52ea5b1"
+  },
+  "reason": "",
+  "end_time": "2026-11-18T17:48:49+09:00",
+  "load_avg_end": "3.63 2.59 1.75"
+}

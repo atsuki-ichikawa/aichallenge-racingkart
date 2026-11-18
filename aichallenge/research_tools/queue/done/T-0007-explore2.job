@@ -1,0 +1,6 @@
+45c4af5 T-0007_back_v20_a07 1 --explore
+# started 2026-11-18T17:43:35+09:00 by run_queue.sh pid 1007593
+# resolved commit=45c4af5374db2086d659911e15e8ea975992c5ee label=T-0007_back_v20_a07 n=1 dur=290 explore=1 plan=
+run 1: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261118-174335_T-0007_back_v20_a07_45c4af5 status=completed
+completed 1/1
+# done 2026-11-18T17:48:49+09:00

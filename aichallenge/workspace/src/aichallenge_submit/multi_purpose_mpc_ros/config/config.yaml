@@ -44,7 +44,7 @@ mpc:
   # Q: [e_y, e_psi, t]
   # R: [v, delta]
   # QN: [e_y, e_psi, t]
-  R: [100000.0, 0.0]
+  R: [100000.0, 10000000.0]  # T-0006（探索）: 2番目（線の曲がりからのずれの重み）。元は 0.0
   a_min: -1.6 # m/s^2
   a_max: 0.7 # m/s^2
   delta_max_deg: 32.0 # degrees

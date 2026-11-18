@@ -1,0 +1,11 @@
+# command: python3 -I docs/racing_line_evidence/track_vs_line.py aichallenge-queue/output/20261117-132131/d1/rosbag2_all aichallenge-racingkart/aichallenge/workspace/src/aichallenge_submit/multi_purpose_mpc_ros
+# script sha256: 2098401a4303913fc8be3952b3d9967986e5a4daab82c7452cf085d73b4a2461
+poses read: 14543  duration 290.9 s
+dropped duplicated closing point
+samples used (speed > 2 m/s, every 5th): 2764
+car <-> CSV line      |e|   [m]: median 0.14  p90 0.35  max 0.62
+car <-> band midpoint |e-m| [m]: median 0.82  p90 1.47  max 2.35
+where line and midpoint differ by > 0.5 m: 1942 samples; closer to line 1922, closer to midpoint 20
+least-squares e = a*m (a=0: on the line, a=1: on the band midpoint): a = -0.04
+same side as midpoint (of the > 0.5 m samples): 913 of 1942
+car centre <-> nearer wall [m]: min 1.54  p10 1.96  median 2.50

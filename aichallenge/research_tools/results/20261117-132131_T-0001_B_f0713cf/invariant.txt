@@ -1,0 +1,2 @@
+FAIL I6 rejected_n=15 fallback_n=0 (expected 0/0)
+invariant: fails=1 checked=I5,I6,I7,I8 skipped=I9 | status: maximum_iterations=0 primal_infeasible*=15 (要確認、失格ではない)

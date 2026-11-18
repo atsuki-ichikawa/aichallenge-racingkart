@@ -1,0 +1,6 @@
+f0713cf T-0001_B 1 plan=../aichallenge-T-0001/aichallenge/research_tools/experiments/T-0001-target-on-line/plan.md
+# started 2026-11-17T13:21:31+09:00 by run_queue.sh pid 280145
+# resolved commit=f0713cf5d72f9e5ca16e7e6ec0853c25d262254c label=T-0001_B n=1 dur=290 explore=0 plan=../aichallenge-T-0001/aichallenge/research_tools/experiments/T-0001-target-on-line/plan.md
+run 1: rc=0 /home/k22010/nlp/research/auto_drive/aichallenge-racingkart/aichallenge/research_tools/results/20261117-132131_T-0001_B_f0713cf status=completed
+completed 1/1
+# done 2026-11-17T13:26:45+09:00
